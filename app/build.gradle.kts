@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
     implementation(libs.firebase.bom)
+    implementation(libs.firebase.bom.v3430)
+    implementation(libs.firebase.auth)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
 }

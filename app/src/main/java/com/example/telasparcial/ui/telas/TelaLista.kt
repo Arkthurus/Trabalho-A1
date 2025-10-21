@@ -45,9 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.ui.viewmodel.AuthViewModel
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoViewModel
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -56,7 +58,9 @@ fun TelaLista(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel
+    grupoContatoViewModel: GrupoContatoViewModel,
+    authViewModel: AuthViewModel,
+    user: FirebaseUser
 ) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
