@@ -67,4 +67,10 @@ dependencies {
     implementation(libs.firebase.bom.v3430)
     implementation(libs.firebase.auth)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.compose.material:material:1.6.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }
