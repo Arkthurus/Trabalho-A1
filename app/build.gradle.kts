@@ -1,25 +1,25 @@
-// build.gradle.kts (app)
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // 1. KSP - Mantido o mais recente
-    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+    id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.example.telasparcial"
     compileSdk = 36
-    // ... (restante do bloco android)
+
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.example.telasparcial"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    // --- DEPENDÊNCIAS PADRÃO ---
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,37 +51,26 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.ui.tooling)
-    implementation(libs.protolite.well.known.types)
-    implementation(libs.androidx.constraintlayout)
-
-    // --- CORREÇÃO DO FIREBASE ---
-    // 1. Adiciona o Firebase BOM para gerenciar versões de forma estável (VERSÃO ATUALIZADA)
-    val firebaseBom = platform("com.google.firebase:firebase-bom:33.1.0")
-    implementation(firebaseBom)
-
-    // 2. Importa o Firestore SEM especificar a versão (o BOM cuidará disso)
-    implementation(libs.google.firebase.firestore.ktx)
-
-    // REMOVIDA: implementação(libs.firebase.firestore.ktx) - para evitar conflito com o Catalog e a versão instável
-
-    // --- DEPENDÊNCIAS DO ROOM (OBRIGATÓRIAS) ---
-    // REMOVIDA: val roomVersion = "2.8.1" (Variável não utilizada)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    // --- DEPENDÊNCIAS DE NAVEGAÇÃO E TERCEIROS ---
-    implementation(libs.accompanist.pager)
-
-    // REMOVIDA: val navVersion = "2.9.5" (Variável não utilizada)
-    implementation(libs.androidx.navigation.compose)
-
-    // --- TESTES ---
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.bom.v3430)
+    implementation(libs.firebase.auth)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.compose.material:material:1.6.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }
