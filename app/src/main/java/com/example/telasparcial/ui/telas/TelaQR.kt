@@ -24,25 +24,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.R
+import com.example.telasparcial.ui.viewmodel.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabScreen(navController: NavController) {
+fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
     val tabNavController = rememberNavController()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
@@ -74,7 +76,7 @@ fun TabScreen(navController: NavController) {
                     // A tela de QR Code agora precisa de um parâmetro (ex: o número de telefone)
                     // Se o número de telefone vier de uma tela anterior, ele deve ser
                     // passado para a TabScreen e depois para TelaQR
-                    TelaQR()
+                    TelaQR(navController, authViewModel)
                 }
                 composable("escanearcodigo") { TelaEscanearCodigo() }
             }
@@ -84,8 +86,8 @@ fun TabScreen(navController: NavController) {
 
 
 @Composable
-@Preview
-fun TelaQR() {
+fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
+
     val context = LocalContext.current
 
     Surface(
@@ -94,7 +96,7 @@ fun TelaQR() {
     ) {
         Column {
             Spacer(Modifier.height(10.dp))
-            ProfileStats()
+            ProfileStats(navController, authViewModel)
             Spacer(Modifier.height(10.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -108,8 +110,34 @@ fun TelaQR() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 150.dp)
+                    .padding(bottom = 70.dp)
             ) {
+                Button(onClick = {
+                    navController.navigate("TelaEditUSER")
+                },
+                    modifier = Modifier
+                        .fillMaxWidth(.85f)
+                        .height(70.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(15.dp)
+                ){
+                    Text("Editar Usuario",
+                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
+                }
+                Button(
+                    onClick = {
+                        authViewModel.desLogar()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.85f)
+                        .height(70.dp)
+                        .align(Alignment.Center)
+                        .padding(15.dp)
+                ) {
+                    Text("Deslogar",
+                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
+                    )
+                }
                 Button(
                     onClick = {
                         Toast.makeText(
@@ -120,7 +148,7 @@ fun TelaQR() {
                     },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
-                        .height(100.dp)
+                        .height(70.dp)
                         .align(Alignment.BottomCenter)
                         .padding(15.dp)
                 ) {
@@ -181,7 +209,50 @@ fun TelaEscanearCodigo() {
 
 
 @Composable
-fun ProfileStats() {
+fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
+
+    // 1. Coletar o estado do usuário e de loading do ViewModel
+    val userState by authViewModel.userState.collectAsStateWithLifecycle()
+    val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
+
+    val requiresReAuth by authViewModel.requiresReAuth.collectAsStateWithLifecycle()
+
+    // Variáveis de estado para os campos de texto
+    var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    var showReAuthDialog by remember { mutableStateOf(false) }
+    var senhaAtual by remember { mutableStateOf("") }
+
+    LaunchedEffect(requiresReAuth) {
+        if (requiresReAuth){
+            showReAuthDialog = true
+        }
+    }
+
+    // 2. LaunchedEffect para preencher os campos quando a tela carregar
+    // Ele será executado sempre que 'userState' mudar.
+    LaunchedEffect(userState) {
+        userState?.email?.let { currentUserEmail ->
+            email = currentUserEmail
+        }
+    }
+
+    // 3. LaunchedEffect para observar o feedback (sucesso/erro)
+    LaunchedEffect(Unit) {
+        authViewModel.authFeedback.collect { feedback ->
+            feedback?.let {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                // Se a atualização foi bem-sucedida, navega de volta
+                if (it.contains("sucesso", ignoreCase = true)) {
+                    navController.popBackStack()
+                }
+                authViewModel.clearFeedBack(0) // Limpa o feedback para não mostrar de novo
+            }
+        }
+    }
+    var emailShow = userState?.email
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -199,11 +270,7 @@ fun ProfileStats() {
         Spacer(modifier = Modifier.width(10.dp))
 
         Text(
-            """
-                Nome: Janeiro Fevereiro de Março Abril
-                Número: (99) 99999-9999
-                Email: Janeiro.fevereiro@março.abril
-            """.trimIndent(),
+            text = "$emailShow",
             style = MaterialTheme.typography.bodyMedium
         )
     }

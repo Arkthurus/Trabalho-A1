@@ -18,10 +18,10 @@ import com.example.telasparcial.data.repository.ContatosRepository
 import com.example.telasparcial.data.repository.GrupoContatoRepository
 import com.example.telasparcial.data.repository.GrupoRepository
 import com.example.telasparcial.ui.telas.AddCtt
+import com.example.telasparcial.ui.telas.EditUSER
 import com.example.telasparcial.ui.telas.TabScreen
 import com.example.telasparcial.ui.telas.TelaDiscagem
 import com.example.telasparcial.ui.telas.TelaEdit
-import com.example.telasparcial.ui.telas.TelaEscanearCodigo
 import com.example.telasparcial.ui.telas.TelaLista
 import com.example.telasparcial.ui.telas.TelaQR
 import com.example.telasparcial.ui.viewmodel.AuthViewModel
@@ -33,6 +33,7 @@ import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoViewModelFactory
 import com.example.telasparcial.ui.telas.SignUpScreen
 import com.example.telasparcial.ui.telas.LoginScreen
+import com.example.telasparcial.ui.telas.TelaEscanearCodigo
 
 @Composable
 fun AppNav(authViewModel: AuthViewModel) {
@@ -123,6 +124,14 @@ fun AppNav(authViewModel: AuthViewModel) {
                 contatoViewModel = contatoViewModel
             )
         }
+        composable(
+            route = "TelaEditUSER",
+        ) { backStackEntry ->
+            EditUSER(
+                navController = navController,
+                authViewModel = authViewModel
+            )
+        }
         composable("TelaDiscar") {
             TelaDiscagem(
                 navController = navController,
@@ -132,7 +141,7 @@ fun AppNav(authViewModel: AuthViewModel) {
             )
         }
         composable("TabScreen") {
-            TabScreen(navController)
+            TabScreen(navController, authViewModel)
         }
         composable(
             route = "TelaAddCtt/{numeroCtt}",
@@ -147,7 +156,7 @@ fun AppNav(authViewModel: AuthViewModel) {
                 navController
             )
         }
-        composable("meuCodigo") { TelaQR() }
+        composable("meuCodigo") { TelaQR(navController, authViewModel) }
         composable("escanearCodigo") { TelaEscanearCodigo() }
     }
 }
