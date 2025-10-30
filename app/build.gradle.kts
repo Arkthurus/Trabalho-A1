@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -52,6 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,4 +75,11 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    // ViewModel KTX para usar 'by viewModels()' ou 'by activityViewModels()'
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    // Verifique a última versão
+    // Lifecycle KTX para usar 'lifecycleScope'
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    // Material Components para os layouts de texto
+    implementation("com.google.android.material:material:1.11.0")
 }
