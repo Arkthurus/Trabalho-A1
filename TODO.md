@@ -10,7 +10,7 @@
 
 ## Atribuições
 ### Arthur
-- **Integração com Firebase**:
+- **Integração com Firebase** **FEITO**:
 	- Authentication;
 
 ### Heitor, Lincoln
