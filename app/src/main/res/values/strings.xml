@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">TelasParcial</string>
-    <string name="title_activity_escanear_codigo">EscanearCodigo</string>
+    <string name="app_name">My Application</string>
 </resources>
