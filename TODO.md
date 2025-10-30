@@ -1,3 +1,4 @@
+## Funções
 - **Uso do Retrofit** (Fetch de APIs);
 - **Integração com Firebase**:
 	- Authentication;
