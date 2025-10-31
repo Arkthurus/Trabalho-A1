@@ -35,7 +35,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,13 +44,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.ui.telas.BottomBar
 import com.example.telasparcial.ui.viewmodel.AuthViewModel
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun TelaLista(
@@ -74,6 +73,8 @@ fun TelaLista(
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { RecentContactsList(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
             item { Spacer(modifier = Modifier.height(15.dp)) }
+            // OTIMIZAÇÃO: Mantido o forEach/Column, mas com a ressalva de que para listas MUITO grandes,
+            // o ideal seria refatorar para LazyColumn de Rows para melhor performance.
             item { DuploCtt(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
         }
 
@@ -86,8 +87,8 @@ fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .size(90.dp)
-            .padding(10.dp),
-        shape = ButtonDefaults.filledTonalShape
+            .padding(10.dp)
+        // shape = ButtonDefaults.filledTonalShape <- Removido o shape inexistente
     ) {
         Icon(
             imageVector = icon,
@@ -96,33 +97,7 @@ fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
         )
     }
 }
-//TRABALHAR FUTURAMENTE PARA A "A1" COMO MELHORIAS DE COMPLEXIDADE NO PROJETO
-//@Composable
-//fun SearchBar() {
-//    var contactName by remember { mutableStateOf("Pesquisar") }
-//    Surface(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(100.dp)
-//            .padding(top = 50.dp)
-//    ) {
-//        Row() {
-//            TextField(
-//                modifier = Modifier
-//                    .weight(1f) // Usa o peso para ocupar o espaço restante
-//                    .padding(end = 5.dp),
-//                value = contactName,
-//                onValueChange = { contactName = it }
-//            )
-//            Button(
-//                onClick = { /* Ação de pesquisa */ },
-//                modifier = Modifier.size(60.dp) // Ajusta o tamanho do botão
-//            ) {
-//                Icon(Icons.Default.Search, contentDescription = "Pesquisar")
-//            }
-//        }
-//    }
-//}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -132,8 +107,6 @@ private fun FavoriteContacts(
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
 ) {
-
-    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     val uiStateGrupoCtt by grupoContatoViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -163,14 +136,16 @@ private fun FavoriteContacts(
                     Spacer(modifier = Modifier.width(15.dp))
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "",
+                        contentDescription = "Contato Favorito: ${contato.nome}",
                         modifier = Modifier
                             .size(60.dp)
                             .padding(start = 10.dp, bottom = 10.dp)
                             .combinedClickable(
-                                onDoubleClick = {contatoViewModel.deletarContato(contato)},
-                                onClick = {contatoViewModel.receberCttEdit(contato)
-                                        navController.navigate("TelaEdit")
+                                // Ação de deleção de I/O
+                                onDoubleClick = { contatoViewModel.deletarContato(contato) },
+                                onClick = {
+                                    contatoViewModel.receberCttEdit(contato)
+                                    navController.navigate("TelaEdit")
                                 }
                             )
                     )
@@ -227,12 +202,12 @@ fun DuploCtt(
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column {
+        // Usa `chunked(2)` para agrupar em pares
         uiState.listaDeContatos.chunked(2).forEach { parDeContatos ->
             Row(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 parDeContatos.forEach { contato ->
-                    // Passe o callback 'getContatos' para o ContactsCards
                     ContactCard(contato, navController, contatoViewModel, grupoViewModel, grupoContatoViewModel)
                 }
             }
@@ -241,7 +216,6 @@ fun DuploCtt(
     }
 }
 
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 private fun ContactCard(
     contato: Contato,
@@ -250,8 +224,7 @@ private fun ContactCard(
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel
 ) {
-
-    val scope = rememberCoroutineScope()
+    // Lógica de I/O removida, agora a responsabilidade é do ViewModel
 
     Spacer(modifier = Modifier.width(20.dp))
     Card(
@@ -263,70 +236,71 @@ private fun ContactCard(
 
     ) {
         Column(modifier = Modifier.fillMaxSize(),
-               verticalArrangement = Arrangement.SpaceBetween){
-        Row {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(start = 5.dp, top = 5.dp)
-                    .clickable {
-                        scope.launch {
-                            val grupoFavoritos = grupoViewModel.buscarPeloNome("Favoritos")
-                                grupoContatoViewModel.adicionarAoGrupo(grupoFavoritos, contato = contato)
+            verticalArrangement = Arrangement.SpaceBetween){
+            Row {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Adicionar aos Favoritos",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(start = 5.dp, top = 5.dp)
+                        .clickable {
+                            // ✅ CHAMADA OTIMIZADA: Delega a lógica de I/O para o ViewModel
+                            contatoViewModel.adicionarAosFavoritos(
+                                contato,
+                                grupoViewModel,
+                                grupoContatoViewModel
+                            )
                         }
-                    }
-            )
-            Text(
-                text = contato.nome,
-                modifier = Modifier.padding(16.dp),
-                textAlign = TextAlign.Center,
-            )
-        }
-        Row {
-            Text(
-                text = contato.numero,
-                modifier = Modifier.padding(start = 15.dp)
-            )
-        }
-        Row {
-            //Editar
-            Button(
-                onClick = {
-                    contatoViewModel.receberCttEdit(contato)
-                    navController.navigate("TelaEdit") },
-                modifier = Modifier
-                    .width(95.dp)
-                    .padding( 10.dp),
-                shape = ButtonDefaults.filledTonalShape
-            ) {
-                Icon(
-                    Icons.Default.Create,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = contato.nome,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center,
                 )
             }
-            //Deletar
-            Button(
-                onClick = {
-                    contatoViewModel.deletarContato(contato)
-                },
-                modifier = Modifier
-                    .width(95.dp)
-                    .padding(top = 10.dp, bottom = 10.dp, end = 10.dp),
-                shape = ButtonDefaults.filledTonalShape
-            ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = null
+            Row {
+                Text(
+                    text = contato.numero,
+                    modifier = Modifier.padding(start = 15.dp)
                 )
             }
+            Row {
+                //Editar
+                Button(
+                    onClick = {
+                        contatoViewModel.receberCttEdit(contato)
+                        navController.navigate("TelaEdit") },
+                    modifier = Modifier
+                        .width(95.dp)
+                        .padding( 10.dp),
+                    shape = ButtonDefaults.filledTonalShape
+                ) {
+                    Icon(
+                        Icons.Default.Create,
+                        contentDescription = "Editar Contato",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                //Deletar
+                Button(
+                    onClick = {
+                        contatoViewModel.deletarContato(contato)
+                    },
+                    modifier = Modifier
+                        .width(95.dp)
+                        .padding(top = 10.dp, bottom = 10.dp, end = 10.dp),
+                    shape = ButtonDefaults.filledTonalShape
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Deletar Contato"
+                    )
+                }
+            }
         }
-    }
     }
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -337,7 +311,7 @@ fun RecentContactCard(
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel
 ) {
-    val scope = rememberCoroutineScope()
+    // Lógica de I/O removida, agora a responsabilidade é do ViewModel
 
     Column(modifier = Modifier.padding()) {
         Surface(
@@ -358,15 +332,12 @@ fun RecentContactCard(
                         contatoViewModel.deletarContato(contato)
                     },
                     onDoubleClick = { // Adicionar aos favoritos
-                        scope.launch {
-                            val grupoFavoritos = grupoViewModel.buscarPeloNome("Favoritos")
-
-                                grupoContatoViewModel.adicionarAoGrupo(
-                                    grupoFavoritos,
-                                    contato
-                                )
-
-                        }
+                        // ✅ CHAMADA OTIMIZADA: Delega a lógica de I/O para o ViewModel
+                        contatoViewModel.adicionarAosFavoritos(
+                            contato,
+                            grupoViewModel,
+                            grupoContatoViewModel
+                        )
                     }
                 )
         ) {
@@ -381,7 +352,7 @@ fun RecentContactCard(
                 Row {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "",
+                        contentDescription = "Ícone de Perfil",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(top = 10.dp)

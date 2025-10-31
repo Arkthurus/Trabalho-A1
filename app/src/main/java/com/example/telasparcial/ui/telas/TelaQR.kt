@@ -252,7 +252,7 @@ fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
             }
         }
     }
-    var emailShow = userState?.email
+    val emailShow = userState?.email
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,

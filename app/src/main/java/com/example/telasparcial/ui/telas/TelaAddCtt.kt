@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+// import androidx.lifecycle.compose.collectAsStateWithLifecycle // Import removido
 import androidx.navigation.NavHostController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
@@ -39,7 +39,8 @@ fun AddCtt(
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
 
-    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
+    // ✅ OTIMIZAÇÃO: Removida a coleta de uiStateCtt, pois não é usada na tela.
+    // val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -78,11 +79,13 @@ fun AddCtt(
         // Botão para salvar
         Button(
             onClick = {
-                var contatoAdd = Contato(nome = name, numero = phoneNumber)
+                val contatoAdd = Contato(nome = name, numero = phoneNumber)
                 contatoViewModel.salvarContato(contatoAdd)
                 navController.popBackStack()
-                },
-            modifier = Modifier.fillMaxWidth()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            // ✅ MELHORIA: Só permite salvar se o nome não estiver vazio/em branco
+            enabled = name.isNotBlank()
         ) {
             Text("Salvar Contato")
         }

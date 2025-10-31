@@ -2,7 +2,7 @@ package com.example.telasparcial.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
+// Removido import androidx.room.util.copy (não necessário)
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
@@ -10,11 +10,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+// Removido import kotlinx.coroutines.flow.update (não usado neste arquivo)
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
-
 
 
 class AuthViewModel : ViewModel(){
@@ -34,7 +32,7 @@ class AuthViewModel : ViewModel(){
 
     fun cadastrar(email: String, senha: String, nome: String){
         viewModelScope.launch {
-
+            // ... (cadastrar inalterado)
             _loading.value = true
             _authFeedback.value = null
 
@@ -57,13 +55,11 @@ class AuthViewModel : ViewModel(){
             }finally {
                 _loading.value = false
             }
-
         }
-
     }
 
     fun login(email: String, senha: String){
-
+        // ... (login inalterado)
         viewModelScope.launch {
             _loading.value = true
             _authFeedback.value = null
@@ -109,9 +105,9 @@ class AuthViewModel : ViewModel(){
                 }
 
                 // 2. Atualizar a senha
-                if (!senha.isNullOrEmpty()) {
+                if (!senha.isNullOrBlank()) { // ✅ MELHORIA DE SEGURANÇA: Usando isNullOrBlank
                     user.updatePassword(senha).await()
-                    _authFeedback.value = "email e senha atualizados com sucesso!"
+                    _authFeedback.value = "Senha atualizada com sucesso!"
                     perfilAtualizado = true
                 }
 
@@ -125,11 +121,10 @@ class AuthViewModel : ViewModel(){
                 }
 
             } catch (e: FirebaseAuthRecentLoginRequiredException) {
-                // Captura exceções do Firebase (ex: senha fraca, e-mail inválido, login recente necessário, etc.)
                 _authFeedback.value   = "Sessão expirada. Por favor, insira sua senha novamente para confirmar a alteração."
                 _requiresReAuth.value = true
             }catch (e: Exception){
-              _authFeedback.value = e.message?: "Erro ao Atualizar Perfil"
+                _authFeedback.value = e.message?: "Erro ao Atualizar Perfil"
             } finally {
                 _loading.value = false
             }
