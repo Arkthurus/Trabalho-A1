@@ -25,9 +25,9 @@ fun AdviceApp(){
     val viewModel: AdviceViewModel = viewModel()
     val advice = viewModel.advice.value
     Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ){
         Text(text = advice,
             style = MaterialTheme.typography.h3,
@@ -36,6 +36,8 @@ fun AdviceApp(){
         Spacer(modifier = Modifier.height(10.dp))
         Button(
             onClick = { viewModel.fetchAdvice() }
-        ) {  Text("New Advice") }
+        ) {
+            Text("Novo Conselho")
+        }
     }
 }
