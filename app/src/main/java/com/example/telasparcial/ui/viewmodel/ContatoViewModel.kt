@@ -16,9 +16,6 @@ import kotlinx.coroutines.launch
 data class  ContatosUiState(
     val listaDeContatos: List<Contato> = emptyList(),
     val lista4Contatos:  List<Contato> = emptyList(),
-    val nome:   String = "",
-    val numero: String = " ",
-    val id: Int = 0,
     val contatoEmEdit: Contato? = null
 )
 
@@ -38,7 +35,6 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
                 }
             }
         }
-        // Coleta os 4 contatos mais recentes/requisitados
         viewModelScope.launch {
             contatosRepository.buscarQTD(4).collect { contatos ->
                 _uiState.update { currentState ->
@@ -73,6 +69,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
 
     fun salvarContato(contato: Contato){
         if (contato.nome.isBlank() || contato.numero.isBlank()) return
+
         viewModelScope.launch {
             contatosRepository.salvarContato(contato)
         }
@@ -88,7 +85,6 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
 
     fun atualizarContato(contato: Contato){
         if (contato.nome.isNotBlank() || contato.numero.isNotBlank()){
-            // A UI é atualizada automaticamente devido à coleta do Flow no bloco init.
             viewModelScope.launch { contatosRepository.atualizarContato(contato) }
         }
     }
