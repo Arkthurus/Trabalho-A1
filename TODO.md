@@ -13,8 +13,11 @@
 - **Integração com Firebase** **FEITO**:
 	- Authentication;
 
+### Lincoln
+- **Associar contatos a um único usuário**
+
 ### Heitor, Lincoln
-- **Criação de tela do administrador** (Heitor e Lincoln); 
+- **Criação de tela do administrador**; 
 
 ### Thiago
 - Modificação do README;
