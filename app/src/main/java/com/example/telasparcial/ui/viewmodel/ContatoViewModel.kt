@@ -68,6 +68,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
 
 
     fun salvarContato(contato: Contato){
+
         if (contato.nome.isBlank() || contato.numero.isBlank()) return
 
         viewModelScope.launch {
