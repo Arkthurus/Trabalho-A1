@@ -1,6 +1,5 @@
 package com.example.telasparcial.ui.nav
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,12 +39,13 @@ fun AppNav(authViewModel: AuthViewModel) {
 
     val navController = rememberNavController()
 
+    // ✅ Coleta de estados do AuthViewModel
     val user by authViewModel.userState.collectAsStateWithLifecycle()
-    val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
     val feedbackMsg by authViewModel.authFeedback.collectAsStateWithLifecycle()
 
     val applicationContext = LocalContext.current.applicationContext
 
+    // ✅ Tratamento global de feedback (Toasts)
     LaunchedEffect(feedbackMsg){
         feedbackMsg?.let {
             Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
@@ -53,29 +53,34 @@ fun AppNav(authViewModel: AuthViewModel) {
         }
     }
 
+    // ✅ Injeção de dependência dos ViewModels de persistência (Room)
     val contatoViewModel: ContatoViewModel = viewModel(
         factory = ContatosViewModelFactory(
             ContatosRepository(AppDatabase.getDatabase(LocalContext.current).contatosDao())
         )
     )
     val grupoViewModel: GrupoViewModel = viewModel(
-    factory = GrupoViewModelFactory(
-        GrupoRepository(AppDatabase.getDatabase(LocalContext.current).grupoDao())
-    )
-    )
-    val grupoContatoViewModel: GrupoContatoViewModel = viewModel(
-    factory = GrupoContatoViewModelFactory(
-        GrupoContatoRepository(
-            AppDatabase.getDatabase(LocalContext.current).grupoContatoDao()
+        factory = GrupoViewModelFactory(
+            GrupoRepository(AppDatabase.getDatabase(LocalContext.current).grupoDao())
         )
     )
+    val grupoContatoViewModel: GrupoContatoViewModel = viewModel(
+        factory = GrupoContatoViewModelFactory(
+            GrupoContatoRepository(
+                AppDatabase.getDatabase(LocalContext.current).grupoContatoDao()
+            )
+        )
     )
 
-    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
+    // A coleta de uiStateCtt não é usada no NavHost e foi removida para simplificar.
+    // val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
-    NavHost(navController = navController, startDestination = if (user != null) "TelaLista" else "TelaLogin") {
+    NavHost(
+        navController = navController,
+        // ✅ Determinação da tela inicial baseada no estado de autenticação
+        startDestination = if (user != null) "TelaLista" else "TelaLogin"
+    ) {
         composable("TelaCadastro"){
-
             SignUpScreen(
                 authViewModel = authViewModel,
                 onNavigateToLogin = {navController.navigate("TelaLogin")}
@@ -87,6 +92,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                 onNavigateToSignUp = { navController.navigate("TelaCadastro") }
             )
         }
+
+        // ✅ Rota "Perfil" (usando o mesmo Composable da TelaLista para re-autenticação)
         composable("Perfil"){
             if (user != null){
                 TelaLista(
@@ -98,6 +105,7 @@ fun AppNav(authViewModel: AuthViewModel) {
                     user = user!!
                 )
             }else{
+                // Redirecionamento seguro para login em caso de deslogar
                 LaunchedEffect(Unit) {
                     navController.navigate("TelaLogin"){
                         popUpTo(navController.graph.id){inclusive = true}
@@ -105,28 +113,24 @@ fun AppNav(authViewModel: AuthViewModel) {
                 }
             }
         }
+
         composable("TelaLista") {
-            // Passa o navController para a tela principal
             TelaLista(
                 navController,
                 contatoViewModel,
                 grupoViewModel,
                 grupoContatoViewModel,
                 authViewModel,
-                user!!
+                user!! // Garante que o usuário não é nulo antes de passar
             )
         }
-        composable(
-            route = "TelaEdit",
-        ) { backStackEntry ->
+        composable(route = "TelaEdit") {
             TelaEdit(
                 navController = navController,
                 contatoViewModel = contatoViewModel
             )
         }
-        composable(
-            route = "TelaEditUSER",
-        ) { backStackEntry ->
+        composable(route = "TelaEditUSER") {
             EditUSER(
                 navController = navController,
                 authViewModel = authViewModel
@@ -136,6 +140,7 @@ fun AppNav(authViewModel: AuthViewModel) {
             TelaDiscagem(
                 navController = navController,
                 onNavigateToAddCtt = { numeroCtt: String ->
+                    // ✅ Navegação com argumento
                     navController.navigate("TelaAddCtt/$numeroCtt")
                 }
             )
@@ -150,7 +155,6 @@ fun AppNav(authViewModel: AuthViewModel) {
             val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
 
             AddCtt(
-                //Manter isso
                 numeroCtt = numeroCtt,
                 contatoViewModel,
                 navController

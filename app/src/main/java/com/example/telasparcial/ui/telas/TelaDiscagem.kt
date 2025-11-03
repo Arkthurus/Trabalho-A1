@@ -32,40 +32,60 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+// Removida a anotação @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+// pois usaremos o parâmetro padding
 @Composable
 fun TelaDiscagem(navController: NavController, onNavigateToAddCtt: (String) -> Unit) {
     Scaffold(
-        bottomBar = {BottomBar(navController)}
-    ) {
-        Column(modifier = Modifier.padding(top = 50.dp)
+        bottomBar = { BottomBar(navController) }
+    ) { innerPadding -> // ✅ Recebe o padding do Scaffold
+        Column(
+            // ✅ CORREÇÃO: Aplica o padding interno, especialmente o inferior
+            modifier = Modifier.padding(innerPadding)
         ) {
             Discagem(onNavigateToAddCtt)
         }
     }
 }
 
+// 🎯 MELHORIA: Usando componentes padrão do Material3 para a NavigationBar
 @Composable
 fun BottomBar(navController : NavController) {
-    Surface(
-        modifier = Modifier
-            .height(80.dp)
-            .fillMaxWidth(),
-        color = Color.LightGray
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Buttons da sua bottom bar
-            BottomButton(Icons.Default.Menu, onClick = {navController.navigate("TelaLista")})
-            BottomButton(Icons.Default.Call, onClick = {navController.navigate("TelaDiscar")})
-            BottomButton(Icons.Default.AccountCircle, onClick = {navController.navigate("TabScreen")})
+    val currentRoute = remember { mutableStateOf("TelaDiscar") } // Estado básico para controle visual
+
+    // Definição simples dos itens de navegação
+    val items = listOf(
+        Pair(Icons.Default.Menu, "Lista") to "TelaLista",
+        Pair(Icons.Default.Call, "Discar") to "TelaDiscar",
+        Pair(Icons.Default.AccountCircle, "Perfil") to "TabScreen"
+    )
+
+    NavigationBar {
+        items.forEach { (iconPair, route) ->
+            val (icon, label) = iconPair
+            NavigationBarItem(
+                icon = { Icon(icon, contentDescription = label) },
+                label = { Text(label) },
+                selected = currentRoute.value == route, // Verifica se a rota está selecionada
+                onClick = {
+                    currentRoute.value = route
+                    navController.navigate(route) {
+                        // Evita empilhar destinos
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        // Evita múltiplas cópias da mesma tela no topo
+                        launchSingleTop = true
+                        // Restaura estado quando volta
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }
+
 @Composable
 fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
     // Estado que guarda o número digitado
@@ -144,18 +164,23 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    // Botão Ligar (apenas simulação)
                     CallActionButton(
                         icon = Icons.Default.Call,
                         contentDescription = "Ligar",
-                        onClick = { /* Ação do botão Ligar */ }
+                        onClick = {
+                            // Ação: Iniciar discagem. Adicione lógica aqui se necessário.
+                        }
                     )
                     Spacer(modifier = Modifier.width(70.dp))
                     CallActionButton(
                         icon = Icons.Default.AddCircle,
                         contentDescription = "Adicionar Contato",
                         onClick = {
-                            // Chama a função de navegação, passando o número digitado
-                            onNavigateToAddCtt(phoneNumber)
+                            // Verifica se há algo para adicionar antes de navegar
+                            if (phoneNumber.isNotBlank()) {
+                                onNavigateToAddCtt(phoneNumber)
+                            }
                         }
                     )
                 }
@@ -164,6 +189,7 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
     }
 }
 
+// Componentes auxiliares inalterados
 @Composable
 fun NumberButton(digit: String, onClick: () -> Unit) {
     Button(
