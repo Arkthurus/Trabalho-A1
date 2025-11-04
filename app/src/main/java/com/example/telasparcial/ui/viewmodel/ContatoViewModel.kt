@@ -45,8 +45,6 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
     }
 
 
-    // ✅ NOVO MÉTODO: Centraliza a lógica de adicionar aos favoritos,
-    // garantindo que as operações de I/O ocorram no ViewModel.
     fun adicionarAosFavoritos(
         contato: Contato,
         grupoViewModel: GrupoViewModel,
