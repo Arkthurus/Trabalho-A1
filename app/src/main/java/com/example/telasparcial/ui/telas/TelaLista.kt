@@ -52,6 +52,7 @@ import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import com.google.firebase.auth.FirebaseUser
 
 
+
 @Composable
 fun TelaLista(
     navController: NavController,
@@ -68,6 +69,34 @@ fun TelaLista(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
+
+            item { Spacer(modifier = Modifier.height(5.dp)) }
+
+            // ===============================================
+            // ✅ NOVO: BOTÃO DE ACESSO ADMIN TEMPORÁRIO
+            // Este botão navega para a rota "TelaAdm"
+            // ===============================================
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 22.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.End // Alinha à direita
+                ) {
+                    Button(
+                        onClick = { navController.navigate("TelaAdm") },
+                        modifier = Modifier.width(150.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red.copy(alpha = 0.8f), // Destaca para ser temporário
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Modo Admin")
+                    }
+                }
+            }
+            // ===============================================
+
             item { Spacer(modifier = Modifier.height(5.dp)) }
             item { FavoriteContacts(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
@@ -88,7 +117,7 @@ fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
         modifier = Modifier
             .size(90.dp)
             .padding(10.dp)
-        // shape = ButtonDefaults.filledTonalShape <- Removido o shape inexistente
+
     ) {
         Icon(
             imageVector = icon,
@@ -245,7 +274,7 @@ private fun ContactCard(
                         .size(40.dp)
                         .padding(start = 5.dp, top = 5.dp)
                         .clickable {
-                            // ✅ CHAMADA OTIMIZADA: Delega a lógica de I/O para o ViewModel
+                            //Delega a lógica de I/O para o ViewModel
                             contatoViewModel.adicionarAosFavoritos(
                                 contato,
                                 grupoViewModel,

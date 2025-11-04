@@ -33,6 +33,7 @@ import com.example.telasparcial.ui.viewmodel.GrupoViewModelFactory
 import com.example.telasparcial.ui.telas.SignUpScreen
 import com.example.telasparcial.ui.telas.LoginScreen
 import com.example.telasparcial.ui.telas.TelaEscanearCodigo
+import com.example.telasparcial.ui.telas.TelaAdm // Importação da nova tela Admin
 
 @Composable
 fun AppNav(authViewModel: AuthViewModel) {
@@ -71,9 +72,6 @@ fun AppNav(authViewModel: AuthViewModel) {
             )
         )
     )
-
-    // A coleta de uiStateCtt não é usada no NavHost e foi removida para simplificar.
-    // val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     NavHost(
         navController = navController,
@@ -162,5 +160,15 @@ fun AppNav(authViewModel: AuthViewModel) {
         }
         composable("meuCodigo") { TelaQR(navController, authViewModel) }
         composable("escanearCodigo") { TelaEscanearCodigo() }
+
+        // ===============================================
+        // ✅ ROTA DO PAINEL ADMINISTRATIVO
+        // ===============================================
+        composable("TelaAdm") {
+            TelaAdm(
+                navController = navController,
+                authViewModel = authViewModel
+            )
+        }
     }
 }
