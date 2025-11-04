@@ -15,11 +15,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [
-    Contato::class,
-    Grupo::class,
-    GrupoContato::class
-], version = 6)
+@Database(
+    entities = [
+        Contato::class,
+        Grupo::class,
+        GrupoContato::class
+    ], version = 6
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun contatosDao(): ContatosDAO
@@ -38,15 +40,24 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(
+            val db = Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "app_database"
             )
-                .fallbackToDestructiveMigration(false) // A versão 6 ainda está em desenvolvimento
-                // ✅ MELHORIA: Usa um callback para inserir dados iniciais de forma limpa
-                .addCallback(DatabaseCallback(INSTANCE))
+                .fallbackToDestructiveMigration(false)
                 .build()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val grupoDao = db.grupoDao()
+                val grupoFavoritos = grupoDao.buscarPeloNome("Favoritos")
+
+                if (grupoFavoritos == null) {
+                    grupoDao.inserirGrupo(Grupo(nome = "Favoritos"))
+                }
+            }
+
+            return db
         }
     }
 }
@@ -58,8 +69,8 @@ private class DatabaseCallback(
     private val databaseInstance: AppDatabase? // Passa a referência da instância
 ) : RoomDatabase.Callback() {
 
-    override fun onCreate(db: SupportSQLiteDatabase) {
-        super.onCreate(db)
+    override fun onOpen(db: SupportSQLiteDatabase) {
+        super.onOpen(db)
 
         // Usa o Dispatchers.IO para garantir que a inserção ocorra fora da thread principal.
         CoroutineScope(Dispatchers.IO).launch {
@@ -75,9 +86,4 @@ private class DatabaseCallback(
             }
         }
     }
-
-    // Opcional: onOpen é chamado toda vez que a base de dados é aberta.
-    // override fun onOpen(db: SupportSQLiteDatabase) {
-    //     super.onOpen(db)
-    // }
 }

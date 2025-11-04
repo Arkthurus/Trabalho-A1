@@ -10,12 +10,12 @@ class ContatosRepository (private val contatosDAO: ContatosDAO){
         contatosDAO.salvarContato(contato)
     }
 
-    suspend fun buscarTodos(): Flow<List<Contato>> {
+    fun buscarTodos(): Flow<List<Contato>> {
         return contatosDAO.buscarTodos()
     }
 
-    suspend fun buscarQTD(QTD: Int): Flow<List<Contato>> {
-        return contatosDAO.buscar(QTD)
+    fun buscarQTD(quantidade: Int): Flow<List<Contato>> {
+        return contatosDAO.buscar(quantidade)
     }
 
     suspend fun atualizarContato(contato: Contato){
@@ -25,5 +25,4 @@ class ContatosRepository (private val contatosDAO: ContatosDAO){
     suspend fun deletarContato(contato: Contato){
         contatosDAO.deletarContato(contato)
     }
-
 }
