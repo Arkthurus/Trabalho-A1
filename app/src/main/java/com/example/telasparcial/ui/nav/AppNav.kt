@@ -99,8 +99,7 @@ fun AppNav(authViewModel: AuthViewModel) {
                     contatoViewModel = contatoViewModel,
                     grupoViewModel = grupoViewModel,
                     grupoContatoViewModel = grupoContatoViewModel,
-                    authViewModel = authViewModel,
-                    user = user!!
+                    authViewModel = authViewModel
                 )
             }else{
                 // Redirecionamento seguro para login em caso de deslogar
@@ -114,12 +113,11 @@ fun AppNav(authViewModel: AuthViewModel) {
 
         composable("TelaLista") {
             TelaLista(
-                navController,
-                contatoViewModel,
-                grupoViewModel,
-                grupoContatoViewModel,
-                authViewModel,
-                user!! // Garante que o usuário não é nulo antes de passar
+                navController = navController,
+                contatoViewModel = contatoViewModel,
+                grupoViewModel = grupoViewModel,
+                grupoContatoViewModel = grupoContatoViewModel,
+                authViewModel = authViewModel
             )
         }
         composable(route = "TelaEdit") {
