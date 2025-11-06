@@ -82,4 +82,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     // Material Components para os layouts de texto
     implementation("com.google.android.material:material:1.11.0")
+    // Firestore
+    implementation("com.google.firebase:firebase-firestore")
 }
