@@ -24,6 +24,20 @@ class AuthViewModel : ViewModel(){
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    // Para verificar se o usuário é admin
+    private lateinit var adminRepository: AdminRepository
+    private val _isAdmin = MutableStateFlow(false)
+    val isAdmin: StateFlow<Boolean> = _isAdmin
+
+    init {
+        if (auth.currentUser != null) {
+            adminRepository = AdminRepository(fireStore = FirebaseFirestore.getInstance(), auth = auth)
+            viewModelScope.launch {
+                _isAdmin.value = adminRepository.isAdmin()
+            }
+        }
+    }
+
     fun cadastrar(email: String, senha: String, nome: String){
         viewModelScope.launch {
             _loading.value = true
@@ -56,9 +70,9 @@ class AuthViewModel : ViewModel(){
             _loading.value = true
             _authFeedback.value = null
             try {
-
                 auth.signInWithEmailAndPassword(email, senha).await()
                 _userState.value = auth.currentUser
+                _isAdmin.value = adminRepository.isAdmin()
             }catch (e: Exception){
                 _authFeedback.value = e.message?: "Erro no Login :/"
             }finally {
@@ -156,6 +170,7 @@ class AuthViewModel : ViewModel(){
     fun desLogar(){
         auth.signOut()
         _userState.value = null
+        _isAdmin.value = false
     }
 
 

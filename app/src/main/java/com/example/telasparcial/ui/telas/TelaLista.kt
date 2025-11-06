@@ -57,6 +57,8 @@ fun TelaLista(
     grupoContatoViewModel: GrupoContatoViewModel,
     authViewModel: AuthViewModel
 ) {
+    val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
+
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
@@ -64,32 +66,31 @@ fun TelaLista(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-
             item { Spacer(modifier = Modifier.height(5.dp)) }
 
-            // ===============================================
-            // ✅ NOVO: BOTÃO DE ACESSO ADMIN TEMPORÁRIO
-            // Este botão navega para a rota "TelaAdm"
-            // ===============================================
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 22.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-                        onClick = { navController.navigate("TelaAdm") },
-                        modifier = Modifier.width(150.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red.copy(alpha = 0.8f), // Destaca para ser temporário
-                            contentColor = Color.White
-                        )
+            // Só vai renderizar essa espelunca se o user for admin
+            if (isAdmin) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 22.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text("Modo Admin")
+                        Button(
+                            onClick = { navController.navigate("TelaAdm") },
+                            modifier = Modifier.width(150.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red.copy(alpha = 0.8f),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Modo Admin")
+                        }
                     }
                 }
             }
+
             // ===============================================
 
             item { Spacer(modifier = Modifier.height(5.dp)) }
