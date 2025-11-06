@@ -21,24 +21,28 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.R
+import com.example.telasparcial.ui.viewmodel.AdviceViewModel
 import com.example.telasparcial.ui.viewmodel.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -94,7 +98,7 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
         modifier = Modifier
             .fillMaxHeight()
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally){
             Spacer(Modifier.height(10.dp))
             ProfileStats(navController, authViewModel)
             Spacer(Modifier.height(10.dp))
@@ -104,24 +108,45 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Image(painter = painterResource(id = R.drawable.qr_code), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.qr_code), contentDescription = null, modifier = Modifier.size(200.dp))
             }
+
+            val viewModel: AdviceViewModel = viewModel()
+            val advice = viewModel.advice.value
+
+            Text(text = advice,
+                style = androidx.compose.material.MaterialTheme.typography.h3,
+                fontSize = TextUnit(value = 5f, type = TextUnitType.Em),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp).height(100.dp))
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 120.dp)
+                    .size(200.dp)
+
             ) {
+
+                Button(
+                    onClick = { viewModel.fetchAdvice()},
+                    modifier = Modifier
+                        .fillMaxWidth(.85f)
+                        .height(50.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(top = 5.dp)
+                ) {
+                    Text("Novo Conselho")
+                }
+
                 Button(onClick = {
                     navController.navigate("TelaEditUSER")
                 },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
-                        .align(Alignment.TopCenter)
-                        .padding(5.dp)
+                        .align(Alignment.Center)
+
                 ){
-                    Text("Editar Usuario",
+                    Text("Editar User",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
                 }
                 Button(
@@ -131,31 +156,10 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
-                        .align(Alignment.Center)
-                        .padding(5.dp)
+                        .align(Alignment.BottomCenter)
+
                 ) {
                     Text("Deslogar",
-                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
-                    )
-                }
-                Button(
-                    onClick = {
-                        Toast.makeText(
-                            context,
-                            "Código copiado para a área de transferência",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(.85f)
-                        .height(50.dp)
-                        .align(Alignment.BottomCenter)
-                        .padding(5.dp)
-                ) {
-                    Icon(Icons.Default.Share, "compartilhar")
-                    Spacer(Modifier.width(15.dp))
-                    Text(
-                        "Compartilhar código QR",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
                     )
                 }
