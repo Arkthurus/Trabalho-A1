@@ -56,9 +56,7 @@ fun TelaLista(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel,
-    authViewModel: AuthViewModel,
-    user: FirebaseUser
+    grupoContatoViewModel: GrupoContatoViewModel
 ) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
