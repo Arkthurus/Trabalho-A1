@@ -2,15 +2,15 @@ package com.example.telasparcial.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-// Removido import androidx.room.util.copy (não necessário)
+import com.example.telasparcial.data.repository.AdminRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-// Removido import kotlinx.coroutines.flow.update (não usado neste arquivo)
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
