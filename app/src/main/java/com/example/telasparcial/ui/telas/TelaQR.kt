@@ -110,16 +110,16 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 70.dp)
+                    .padding(bottom = 120.dp)
             ) {
                 Button(onClick = {
                     navController.navigate("TelaEditUSER")
                 },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
-                        .height(70.dp)
+                        .height(50.dp)
                         .align(Alignment.TopCenter)
-                        .padding(15.dp)
+                        .padding(5.dp)
                 ){
                     Text("Editar Usuario",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
@@ -130,9 +130,9 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                     },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
-                        .height(70.dp)
+                        .height(50.dp)
                         .align(Alignment.Center)
-                        .padding(15.dp)
+                        .padding(5.dp)
                 ) {
                     Text("Deslogar",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
@@ -148,9 +148,9 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                     },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
-                        .height(70.dp)
+                        .height(50.dp)
                         .align(Alignment.BottomCenter)
-                        .padding(15.dp)
+                        .padding(5.dp)
                 ) {
                     Icon(Icons.Default.Share, "compartilhar")
                     Spacer(Modifier.width(15.dp))
