@@ -38,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,7 +47,6 @@ import com.example.telasparcial.ui.viewmodel.AuthViewModel
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoViewModel
-import com.google.firebase.auth.FirebaseUser
 
 
 @Composable
