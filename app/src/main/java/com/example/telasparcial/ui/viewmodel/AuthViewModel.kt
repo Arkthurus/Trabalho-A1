@@ -16,17 +16,11 @@ import kotlinx.coroutines.tasks.await
 
 
 class AuthViewModel : ViewModel(){
-
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     private val _userState = MutableStateFlow(auth.currentUser)
     val userState: StateFlow<FirebaseUser?> = _userState
-
-    //feedback UI
     private val _authFeedback = MutableStateFlow<String?>(null)
     val authFeedback: StateFlow<String?> = _authFeedback
-
-    //loading
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
