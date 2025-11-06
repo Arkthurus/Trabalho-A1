@@ -28,4 +28,4 @@
 - Try-catches tanto nas buscas da api quanto do banco de dados, expondo o erro à UI State;
 
 ### A Fazer
-- **Uso do Retrofit** (Fetch de APIs);
+- **Firebase:** Integração com RemoteConfig
