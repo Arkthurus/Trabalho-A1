@@ -19,14 +19,15 @@ class AdminRepository(private val fireStore: FirebaseFirestore, private val auth
 
         return try {
             // Buscar o documento do usuário nas entradas de admins
-            val document = fireStore.collection("admins")
+            val results = fireStore.collection("admins")
                 .where(Filter.equalTo("userId", userId))
                 .limit(1)
                 .get()
-                .await();
+                .await()
+                .documents;
 
             // Se ele não estiver vazio, quer dizer que ele foi encontrado :p
-            !document.isEmpty;
+            !results.isEmpty();
         } catch (e: Exception) {
             Log.e("AdminRepository", "Erro ao verificar se o usuário é admin: ${e.message}")
             false
