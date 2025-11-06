@@ -93,13 +93,34 @@ fun TelaLista(
             // ===============================================
 
             item { Spacer(modifier = Modifier.height(5.dp)) }
-            item { FavoriteContacts(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                FavoriteContacts(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { RecentContactsList(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                RecentContactsList(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
             item { Spacer(modifier = Modifier.height(15.dp)) }
             // OTIMIZAÇÃO: Mantido o forEach/Column, mas com a ressalva de que para listas MUITO grandes,
             // o ideal seria refatorar para LazyColumn de Rows para melhor performance.
-            item { DuploCtt(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                DuploCtt(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
         }
 
     }
@@ -225,7 +246,13 @@ fun DuploCtt(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 parDeContatos.forEach { contato ->
-                    ContactCard(contato, navController, contatoViewModel, grupoViewModel, grupoContatoViewModel)
+                    ContactCard(
+                        contato,
+                        navController,
+                        contatoViewModel,
+                        grupoViewModel,
+                        grupoContatoViewModel
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -252,8 +279,10 @@ private fun ContactCard(
             .size(width = 190.dp, height = 170.dp)
 
     ) {
-        Column(modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             Row {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
@@ -287,10 +316,11 @@ private fun ContactCard(
                 Button(
                     onClick = {
                         contatoViewModel.receberCttEdit(contato)
-                        navController.navigate("TelaEdit") },
+                        navController.navigate("TelaEdit")
+                    },
                     modifier = Modifier
                         .width(95.dp)
-                        .padding( 10.dp),
+                        .padding(10.dp),
                     shape = ButtonDefaults.filledTonalShape
                 ) {
                     Icon(
