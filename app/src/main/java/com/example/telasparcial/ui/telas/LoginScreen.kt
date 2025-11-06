@@ -69,7 +69,7 @@ fun LoginScreen(
                     authViewModel.login(email = email, senha = password)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = email.isNotBlank() && password.isNotBlank() // ✅ MELHORIA: Desabilita se os campos estiverem vazios
+                enabled = email.isNotBlank() && password.isNotBlank()
             ) {
                 Text("Entrar")
             }

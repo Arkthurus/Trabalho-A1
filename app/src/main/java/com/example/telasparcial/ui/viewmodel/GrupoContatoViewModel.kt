@@ -63,6 +63,17 @@ class GrupoContatoViewModel(private val grupoContatoRepository: GrupoContatoRepo
             grupoContatoRepository.adicionarAoGrupo(grupo, contato)
         }
     }
+    fun removerDoGrupo(grupo: Grupo, contato: Contato) {
+        viewModelScope.launch {
+            try {
+                // Aqui você chama o Repositório, que por sua vez chamará o DAO
+                grupoContatoRepository.removerDoGrupo(grupo.id, contato.id)
+                Log.d("GrupoContatoViewModel", "${contato.nome} removido do grupo ${grupo.nome}.")
+            } catch (e: Exception) {
+                Log.e("GrupoContatoViewModel", "Erro ao remover do grupo: ${e.message}")
+            }
+        }
+    }
 }
 
 class GrupoContatoViewModelFactory(private val grupoContatoRepository: GrupoContatoRepository) : ViewModelProvider.Factory {

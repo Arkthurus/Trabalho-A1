@@ -1,5 +1,6 @@
 package com.example.telasparcial.data.repository
 
+import android.util.Log
 import com.example.telasparcial.data.dao.GrupoDAO
 import com.example.telasparcial.data.entities.Grupo
 import kotlinx.coroutines.flow.Flow
