@@ -12,7 +12,8 @@
 ### Arthur
 - **Integração com Firebase** **FEITO**:
 	- Authentication;
-
+- **RetroFit** **FEITO**
+    - Mudar o fetch da api da tela Advice para a tela QR; 
 ### Lincoln
 - **Associar contatos a um único usuário**
 
