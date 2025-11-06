@@ -159,8 +159,7 @@ class AuthViewModel : ViewModel(){
     }
 
 
-    fun clearFeedBack(i: Int) {
+    fun clearFeedBack() {
         _authFeedback.value = null
     }
-
 }

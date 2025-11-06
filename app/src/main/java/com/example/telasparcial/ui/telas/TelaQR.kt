@@ -252,7 +252,7 @@ fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
                 if (it.contains("sucesso", ignoreCase = true)) {
                     navController.popBackStack()
                 }
-                authViewModel.clearFeedBack(0) // Limpa o feedback para não mostrar de novo
+                authViewModel.clearFeedBack() // Limpa o feedback para não mostrar de novo
             }
         }
     }

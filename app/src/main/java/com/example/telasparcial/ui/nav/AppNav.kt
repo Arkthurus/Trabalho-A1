@@ -50,7 +50,7 @@ fun AppNav(authViewModel: AuthViewModel) {
     LaunchedEffect(feedbackMsg){
         feedbackMsg?.let {
             Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
-            authViewModel.clearFeedBack(0)
+            authViewModel.clearFeedBack()
         }
     }
 
