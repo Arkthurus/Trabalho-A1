@@ -1,8 +1,8 @@
-package com.example.telasparcial.data.dao
+package com.example.telasparcial.data.repository
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.Filter.equalTo
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -20,7 +20,7 @@ class AdminRepository(private val fireStore: FirebaseFirestore, private val auth
         return try {
             // Buscar o documento do usuário nas entradas de admins
             val document = fireStore.collection("admins")
-                .where(equalTo("userId", userId))
+                .where(Filter.equalTo("userId", userId))
                 .limit(1)
                 .get()
                 .await();
