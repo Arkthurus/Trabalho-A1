@@ -150,7 +150,7 @@ fun EditUSER(
                     authViewModel.atualizaruser(email, senha)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = isLoading // Desabilita o botão durante o carregamento
+                enabled = !isLoading // Desabilita o botão durante o carregamento
             ) {
                 Text("Salvar Alterações")
             }
