@@ -32,7 +32,6 @@ class AuthViewModel : ViewModel(){
 
     fun cadastrar(email: String, senha: String, nome: String){
         viewModelScope.launch {
-            // ... (cadastrar inalterado)
             _loading.value = true
             _authFeedback.value = null
 
@@ -59,7 +58,6 @@ class AuthViewModel : ViewModel(){
     }
 
     fun login(email: String, senha: String){
-        // ... (login inalterado)
         viewModelScope.launch {
             _loading.value = true
             _authFeedback.value = null
@@ -74,7 +72,6 @@ class AuthViewModel : ViewModel(){
             }
         }
     }
-    // NOVO: StateFlow para controlar a necessidade de reautenticação
     private val _requiresReAuth = MutableStateFlow(false)
     val requiresReAuth: StateFlow<Boolean> = _requiresReAuth
     // Função para resetar o estado de reautenticação
@@ -130,7 +127,7 @@ class AuthViewModel : ViewModel(){
             }
         }
     }
-    // NOVA FUNÇÃO: Para reautenticar o usuário
+
     fun reauthenticateAndRetryUpdate(password: String, newEmail: String?, newPassword: String?) {
         viewModelScope.launch {
             _loading.value = true

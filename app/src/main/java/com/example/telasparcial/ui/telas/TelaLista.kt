@@ -79,7 +79,7 @@ fun TelaLista(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 22.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.End // Alinha à direita
+                    horizontalArrangement = Arrangement.End
                 ) {
                     Button(
                         onClick = { navController.navigate("TelaAdm") },
@@ -107,24 +107,6 @@ fun TelaLista(
 
     }
 }
-
-@Composable
-fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .size(90.dp)
-            .padding(10.dp)
-
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(40.dp)
-        )
-    }
-}
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -168,8 +150,19 @@ private fun FavoriteContacts(
                             .size(60.dp)
                             .padding(start = 10.dp, bottom = 10.dp)
                             .combinedClickable(
-                                // Ação de deleção de I/O
-                                onDoubleClick = { contatoViewModel.deletarContato(contato) },
+                                // ✅ CORREÇÃO AQUI: Chamar a função de remoção do grupo
+                                onDoubleClick = {
+                                    // 1. Busca o grupo "Favoritos" (pode ser null se não existir)
+                                    val grupoFavoritosParaRemover = grupoFavoritos?.grupo
+
+                                    // 2. Chama a função que remove APENAS a ligação (GrupoContato)
+                                    if (grupoFavoritosParaRemover != null) {
+                                        grupoContatoViewModel.removerDoGrupo(
+                                            grupoFavoritosParaRemover,
+                                            contato
+                                        )
+                                    }
+                                },
                                 onClick = {
                                     contatoViewModel.receberCttEdit(contato)
                                     navController.navigate("TelaEdit")

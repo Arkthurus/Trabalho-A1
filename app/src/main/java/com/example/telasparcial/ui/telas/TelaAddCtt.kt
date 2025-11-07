@@ -39,8 +39,6 @@ fun AddCtt(
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
 
-    // ✅ OTIMIZAÇÃO: Removida a coleta de uiStateCtt, pois não é usada na tela.
-    // val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -63,13 +61,13 @@ fun AddCtt(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo para o número de telefone, desabilitado para edição
+
         OutlinedTextField(
             value = phoneNumber,
-            onValueChange = {}, // Não permite edição
+            onValueChange = {},
             label = { Text("Número de Telefone") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            readOnly = true, // Torna o campo somente leitura
+            readOnly = true,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -84,7 +82,6 @@ fun AddCtt(
                 navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth(),
-            // ✅ MELHORIA: Só permite salvar se o nome não estiver vazio/em branco
             enabled = name.isNotBlank()
         ) {
             Text("Salvar Contato")

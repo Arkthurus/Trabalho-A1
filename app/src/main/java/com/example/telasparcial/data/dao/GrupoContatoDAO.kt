@@ -27,6 +27,9 @@ interface GrupoContatoDAO {
         inserirGrupoContato(grupoContato)
     }
 
+    @Query("DELETE FROM GruposContatos WHERE grupoId = :grupoId AND contatoId = :contatoId")
+    suspend fun removerLigacao(grupoId: Int, contatoId: Int)
+
     @Insert
     suspend fun inserirGrupoContato(grupoContato: GrupoContato)
 }
