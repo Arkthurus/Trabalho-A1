@@ -65,8 +65,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.firebase.bom)
-    implementation(libs.firebase.bom.v3430)
+    implementation(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.bom.v3430))
     implementation(libs.firebase.auth)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -82,4 +82,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     // Material Components para os layouts de texto
     implementation("com.google.android.material:material:1.11.0")
+    // Firestore
+    implementation("com.google.firebase:firebase-firestore")
 }

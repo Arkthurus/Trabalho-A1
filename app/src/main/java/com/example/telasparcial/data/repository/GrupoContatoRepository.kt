@@ -20,10 +20,8 @@ class GrupoContatoRepository (private val grupoContatoDAO: GrupoContatoDAO){ // 
 
     suspend fun removerDoGrupo(grupoId: Int, contatoId: Int) {
         try {
-            // 🐛 CORREÇÃO: Usando o nome correto da variável: grupoContatoDAO
             grupoContatoDAO.removerLigacao(grupoId, contatoId)
         } catch (e: Exception) {
-            // ✅ TRATAMENTO DE EXCEÇÃO APLICADO
             Log.e("GrupoContatoRepository", "Erro no DAO ao remover ligação: ${e.message}")
             throw e // Relança para ser tratado no ViewModel, se necessário
         }
