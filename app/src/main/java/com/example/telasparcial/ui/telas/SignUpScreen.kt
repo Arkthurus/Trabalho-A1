@@ -33,7 +33,7 @@ fun SignUpScreen(
             // Se a mensagem de feedback for de sucesso, navega para o login
             if (msg.contains("sucesso", ignoreCase = true)) {
                 onNavigateToLogin()
-                authViewModel.clearFeedBack(0) // Limpa o feedback para não mostrar novamente
+                authViewModel.clearFeedBack() // Limpa o feedback para não mostrar novamente
             }
             // A exibição do Toast global é tratada no NavHost, mas a navegação é local.
         }

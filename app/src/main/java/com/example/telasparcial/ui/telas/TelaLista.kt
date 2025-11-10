@@ -38,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,7 +47,6 @@ import com.example.telasparcial.ui.viewmodel.AuthViewModel
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoViewModel
-import com.google.firebase.auth.FirebaseUser
 
 
 @Composable
@@ -57,9 +55,10 @@ fun TelaLista(
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
-    authViewModel: AuthViewModel,
-    user: FirebaseUser
+    authViewModel: AuthViewModel
 ) {
+    val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
+
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
@@ -67,42 +66,62 @@ fun TelaLista(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-
             item { Spacer(modifier = Modifier.height(5.dp)) }
 
-            // ===============================================
-            // ✅ NOVO: BOTÃO DE ACESSO ADMIN TEMPORÁRIO
-            // Este botão navega para a rota "TelaAdm"
-            // ===============================================
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 22.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-                        onClick = { navController.navigate("TelaAdm") },
-                        modifier = Modifier.width(150.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red.copy(alpha = 0.8f), // Destaca para ser temporário
-                            contentColor = Color.White
-                        )
+            // Só vai renderizar essa espelunca se o user for admin
+            if (isAdmin) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 22.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text("Modo Admin")
+                        Button(
+                            onClick = { navController.navigate("TelaAdm") },
+                            modifier = Modifier.width(150.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red.copy(alpha = 0.8f),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Modo Admin")
+                        }
                     }
                 }
             }
+
             // ===============================================
 
             item { Spacer(modifier = Modifier.height(5.dp)) }
-            item { FavoriteContacts(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                FavoriteContacts(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { RecentContactsList(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                RecentContactsList(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
             item { Spacer(modifier = Modifier.height(15.dp)) }
             // OTIMIZAÇÃO: Mantido o forEach/Column, mas com a ressalva de que para listas MUITO grandes,
             // o ideal seria refatorar para LazyColumn de Rows para melhor performance.
-            item { DuploCtt(navController, contatoViewModel, grupoViewModel, grupoContatoViewModel) }
+            item {
+                DuploCtt(
+                    navController,
+                    contatoViewModel,
+                    grupoViewModel,
+                    grupoContatoViewModel
+                )
+            }
         }
 
     }
@@ -228,7 +247,13 @@ fun DuploCtt(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 parDeContatos.forEach { contato ->
-                    ContactCard(contato, navController, contatoViewModel, grupoViewModel, grupoContatoViewModel)
+                    ContactCard(
+                        contato,
+                        navController,
+                        contatoViewModel,
+                        grupoViewModel,
+                        grupoContatoViewModel
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -255,8 +280,10 @@ private fun ContactCard(
             .size(width = 190.dp, height = 170.dp)
 
     ) {
-        Column(modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             Row {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
@@ -290,10 +317,11 @@ private fun ContactCard(
                 Button(
                     onClick = {
                         contatoViewModel.receberCttEdit(contato)
-                        navController.navigate("TelaEdit") },
+                        navController.navigate("TelaEdit")
+                    },
                     modifier = Modifier
                         .width(95.dp)
-                        .padding( 10.dp),
+                        .padding(10.dp),
                     shape = ButtonDefaults.filledTonalShape
                 ) {
                     Icon(

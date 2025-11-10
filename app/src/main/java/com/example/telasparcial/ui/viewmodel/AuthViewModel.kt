@@ -2,33 +2,41 @@ package com.example.telasparcial.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-// Removido import androidx.room.util.copy (não necessário)
+import com.example.telasparcial.data.repository.AdminRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-// Removido import kotlinx.coroutines.flow.update (não usado neste arquivo)
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
 class AuthViewModel : ViewModel(){
-
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     private val _userState = MutableStateFlow(auth.currentUser)
     val userState: StateFlow<FirebaseUser?> = _userState
-
-    //feedback UI
     private val _authFeedback = MutableStateFlow<String?>(null)
     val authFeedback: StateFlow<String?> = _authFeedback
-
-    //loading
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
+
+    // Para verificar se o usuário é admin
+    private lateinit var adminRepository: AdminRepository
+    private val _isAdmin = MutableStateFlow(false)
+    val isAdmin: StateFlow<Boolean> = _isAdmin
+
+    init {
+        if (auth.currentUser != null) {
+            adminRepository = AdminRepository(fireStore = FirebaseFirestore.getInstance(), auth = auth)
+            viewModelScope.launch {
+                _isAdmin.value = adminRepository.isAdmin()
+            }
+        }
+    }
 
     fun cadastrar(email: String, senha: String, nome: String){
         viewModelScope.launch {
@@ -62,9 +70,9 @@ class AuthViewModel : ViewModel(){
             _loading.value = true
             _authFeedback.value = null
             try {
-
                 auth.signInWithEmailAndPassword(email, senha).await()
                 _userState.value = auth.currentUser
+                _isAdmin.value = adminRepository.isAdmin()
             }catch (e: Exception){
                 _authFeedback.value = e.message?: "Erro no Login :/"
             }finally {
@@ -162,11 +170,11 @@ class AuthViewModel : ViewModel(){
     fun desLogar(){
         auth.signOut()
         _userState.value = null
+        _isAdmin.value = false
     }
 
 
-    fun clearFeedBack(i: Int) {
+    fun clearFeedBack() {
         _authFeedback.value = null
     }
-
 }
