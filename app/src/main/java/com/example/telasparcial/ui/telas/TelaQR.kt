@@ -31,10 +31,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color // Importado para usar Color.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.sp // Importado para usar 'sp' no lineHeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -77,9 +79,7 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
 
             NavHost(navController = tabNavController, startDestination = "meucodigo") {
                 composable("meucodigo") {
-                    // A tela de QR Code agora precisa de um parâmetro (ex: o número de telefone)
-                    // Se o número de telefone vier de uma tela anterior, ele deve ser
-                    // passado para a TabScreen e depois para TelaQR
+
                     TelaQR(navController, authViewModel)
                 }
                 composable("escanearcodigo") { TelaEscanearCodigo() }
@@ -114,16 +114,20 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
             val viewModel: AdviceViewModel = viewModel()
             val advice = viewModel.advice.value
 
-            Text(text = advice,
-                style = androidx.compose.material.MaterialTheme.typography.h3,
+            Text(
+                text = advice,
+
+                style = androidx.compose.material.MaterialTheme.typography.h3.copy(
+                    lineHeight = 35.sp
+                ),
                 fontSize = TextUnit(value = 5f, type = TextUnitType.Em),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp).height(100.dp))
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp).height(125.dp)
+            )
 
             Box(
                 modifier = Modifier
                     .size(200.dp)
-
             ) {
 
                 Button(
@@ -134,7 +138,8 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                         .align(Alignment.TopCenter)
                         .padding(top = 5.dp)
                 ) {
-                    Text("Novo Conselho")
+                    Text("Novo Conselho",
+                        color = Color.White)
                 }
 
                 Button(onClick = {
@@ -147,7 +152,8 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
 
                 ){
                     Text("Editar User",
-                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
+                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
+                        color = Color.White)
                 }
                 Button(
                     onClick = {
@@ -160,7 +166,8 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
 
                 ) {
                     Text("Deslogar",
-                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
+                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
+                        color = Color.White
                     )
                 }
             }
@@ -185,7 +192,6 @@ fun TelaEscanearCodigo() {
             Text("Aponte sua câmera para o código QR de alguém!")
         }
 
-        // Image by Daniel Harntanto: https://www.vecteezy.com/vector-art/9293275-qr-code-vector-for-website-symbol-icon-presentation
         Image(
             painter = painterResource(
                 R.drawable.vecteezy_qr_code_vector_for_website_symbol_icon_presentation_9293275
@@ -206,7 +212,12 @@ fun TelaEscanearCodigo() {
                 .padding(top = 100.dp)
                 .height(80.dp)
         ) {
-            Text("Escanear Código", style = MaterialTheme.typography.headlineSmall)
+            // >> ALTERAÇÃO PARA COR BRANCA
+            Text(
+                "Escanear Código",
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White // Cor branca adicionada
+            )
         }
     }
 }

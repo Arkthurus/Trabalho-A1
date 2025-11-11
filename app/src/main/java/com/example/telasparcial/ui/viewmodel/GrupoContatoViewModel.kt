@@ -66,7 +66,6 @@ class GrupoContatoViewModel(private val grupoContatoRepository: GrupoContatoRepo
     fun removerDoGrupo(grupo: Grupo, contato: Contato) {
         viewModelScope.launch {
             try {
-                // Aqui você chama o Repositório, que por sua vez chamará o DAO
                 grupoContatoRepository.removerDoGrupo(grupo.id, contato.id)
                 Log.d("GrupoContatoViewModel", "${contato.nome} removido do grupo ${grupo.nome}.")
             } catch (e: Exception) {

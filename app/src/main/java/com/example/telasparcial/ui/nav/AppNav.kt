@@ -40,13 +40,11 @@ fun AppNav(authViewModel: AuthViewModel) {
 
     val navController = rememberNavController()
 
-    // ✅ Coleta de estados do AuthViewModel
     val user by authViewModel.userState.collectAsStateWithLifecycle()
     val feedbackMsg by authViewModel.authFeedback.collectAsStateWithLifecycle()
 
     val applicationContext = LocalContext.current.applicationContext
 
-    // ✅ Tratamento global de feedback (Toasts)
     LaunchedEffect(feedbackMsg){
         feedbackMsg?.let {
             Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
@@ -54,7 +52,6 @@ fun AppNav(authViewModel: AuthViewModel) {
         }
     }
 
-    // ✅ Injeção de dependência dos ViewModels de persistência (Room)
     val contatoViewModel: ContatoViewModel = viewModel(
         factory = ContatosViewModelFactory(
             ContatosRepository(AppDatabase.getDatabase(LocalContext.current).contatosDao())
@@ -75,7 +72,7 @@ fun AppNav(authViewModel: AuthViewModel) {
 
     NavHost(
         navController = navController,
-        // ✅ Determinação da tela inicial baseada no estado de autenticação
+
         startDestination = if (user != null) "TelaLista" else "TelaLogin"
     ) {
         composable("TelaCadastro"){
@@ -91,7 +88,6 @@ fun AppNav(authViewModel: AuthViewModel) {
             )
         }
 
-        // ✅ Rota "Perfil" (usando o mesmo Composable da TelaLista para re-autenticação)
         composable("Perfil"){
             if (user != null){
                 TelaLista(
@@ -102,7 +98,7 @@ fun AppNav(authViewModel: AuthViewModel) {
                     authViewModel = authViewModel
                 )
             }else{
-                // Redirecionamento seguro para login em caso de deslogar
+
                 LaunchedEffect(Unit) {
                     navController.navigate("TelaLogin"){
                         popUpTo(navController.graph.id){inclusive = true}
@@ -136,7 +132,7 @@ fun AppNav(authViewModel: AuthViewModel) {
             TelaDiscagem(
                 navController = navController,
                 onNavigateToAddCtt = { numeroCtt: String ->
-                    // ✅ Navegação com argumento
+
                     navController.navigate("TelaAddCtt/$numeroCtt")
                 }
             )
@@ -159,9 +155,6 @@ fun AppNav(authViewModel: AuthViewModel) {
         composable("meuCodigo") { TelaQR(navController, authViewModel) }
         composable("escanearCodigo") { TelaEscanearCodigo() }
 
-        // ===============================================
-        // ✅ ROTA DO PAINEL ADMINISTRATIVO
-        // ===============================================
         composable("TelaAdm") {
             TelaAdm(
                 navController = navController,

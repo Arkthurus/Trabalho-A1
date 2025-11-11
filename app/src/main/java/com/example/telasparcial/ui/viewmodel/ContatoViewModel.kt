@@ -27,7 +27,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
     val uiState: StateFlow<ContatosUiState> = _uiState.asStateFlow()
 
     init {
-        // Coleta todos os contatos do repositório
+
         viewModelScope.launch {
             contatosRepository.buscarTodos().collect { contatos ->
                 _uiState.update { currentState ->
