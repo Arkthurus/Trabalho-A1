@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.repository.GrupoRepository
+import com.example.telasparcial.ui.state.GrupoUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
