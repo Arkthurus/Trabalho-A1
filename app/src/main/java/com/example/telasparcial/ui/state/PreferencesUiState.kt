@@ -2,7 +2,7 @@ package com.example.telasparcial.ui.state
 
 import androidx.compose.ui.graphics.Color
 
-enum class TamanhoDeFonte(tamanho: Float) {
+enum class TamanhoDeFonte(val tamanho: Float) {
     Pequeno(tamanho = 18f),
     Medio(tamanho = 20f),
     Grande(tamanho = 22f);
