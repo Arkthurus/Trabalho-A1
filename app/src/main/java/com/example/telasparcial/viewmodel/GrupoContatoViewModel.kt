@@ -8,15 +8,12 @@ import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.entities.pojos.GrupoComContatos
 import com.example.telasparcial.data.repository.GrupoContatoRepository
+import com.example.telasparcial.ui.state.GruposContatosUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class GruposContatosUiState(
-    val gruposComContatos: List<GrupoComContatos> = emptyList()
-) {}
 
 class GrupoContatoViewModel(private val grupoContatoRepository: GrupoContatoRepository) :
     ViewModel() {

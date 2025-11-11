@@ -6,18 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.repository.ContatosRepository
+import com.example.telasparcial.ui.state.ContatosUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-
-data class  ContatosUiState(
-    val listaDeContatos: List<Contato> = emptyList(),
-    val lista4Contatos:  List<Contato> = emptyList(),
-    val contatoEmEdit: Contato? = null
-)
 
 
 class ContatoViewModel (private val contatosRepository: ContatosRepository): ViewModel() {

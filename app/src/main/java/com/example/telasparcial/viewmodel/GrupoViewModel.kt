@@ -12,13 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class  GrupoUiState(
-    val listaDeGrupos: List<Grupo> = emptyList(),
-    val nome:   String = "",
-    val id: Int = 0,
-    val contatoEmEdit: Contato? = null
-){}
-
 class GrupoViewModel (private val grupoRepository: GrupoRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GrupoUiState())
