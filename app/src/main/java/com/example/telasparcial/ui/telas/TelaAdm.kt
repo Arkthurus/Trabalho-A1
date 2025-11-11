@@ -14,11 +14,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.telasparcial.ui.viewmodel.AuthViewModel
 
-// Mock de dados para a UI (será substituído pela lógica real)
+// >> NOVAS IMPORTAÇÕES NECESSÁRIAS
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 data class UserAdm(
     val uid: String,
     val email: String,
-    val isAdm: Boolean = false // Poderíamos adicionar um campo para diferenciar Adm
+    val isAdm: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,15 +31,15 @@ fun TelaAdm(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    // ⚠️ ATENÇÃO: Esta é uma lista MOCK para a UI.
-    // Substituiremos por um Flow de usuários reais do Firebase ou Room na etapa de Lógica.
-    val mockUsers = listOf(
-        UserAdm(uid = "uid123", email = "admin@sistema.com", isAdm = true),
-        UserAdm(uid = "uid456", email = "usuarioA@teste.com"),
-        UserAdm(uid = "uid789", email = "usuarioB@teste.com"),
-        UserAdm(uid = "uid101", email = "heitor@teste.com"),
-        // Adicionar um placeholder para mostrar o usuário logado (se for o Adm)
-    )
+    // 1. CHAME O MÉTODO DE BUSCA DE USUÁRIOS AO CARREGAR A TELA
+    LaunchedEffect(Unit) {
+        authViewModel.fetchRegisteredUsers()
+    }
+
+    // 2. COLETA O ESTADO (LISTA DE USUÁRIOS) DO VIEWMODEL
+    val allUsers by authViewModel.allRegisteredUsers.collectAsStateWithLifecycle()
+    val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
+
 
     Scaffold(
         topBar = {
@@ -59,19 +63,26 @@ fun TelaAdm(
                 .padding(horizontal = 8.dp)
         ) {
             Text(
-                text = "Lista de Usuários Cadastrados",
+                text = "Lista de Usuários Cadastrados (${allUsers.size})",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp)
             )
 
-            // Lista de Usuários
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(mockUsers) { user ->
-                    UserListItem(user = user) {
-                        // Ação futura: Navegar para tela de edição/detalhes do usuário
-                        // navController.navigate("TelaEditUser/${user.uid}")
+            // 3. EXIBIÇÃO CONDICIONAL DE CARREGAMENTO OU LISTA
+            if (isLoading && allUsers.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                // Lista de Usuários
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // 4. USA A LISTA REAL (allUsers)
+                    items(allUsers) { user ->
+                        UserListItem(user = user) {
+                            // Ação futura: Navegar para tela de edição/detalhes do usuário
+                        }
                     }
                 }
             }

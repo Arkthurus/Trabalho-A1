@@ -26,7 +26,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
-// Removidos imports de CoroutineScope e Dispatchers
 
 @Composable
 fun TelaEdit(
@@ -53,7 +52,6 @@ fun TelaEdit(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        //Nome
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -63,7 +61,6 @@ fun TelaEdit(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Numero de telefone
         OutlinedTextField(
             value = numeroTelefone,
             onValueChange = { numeroTelefone = it },
@@ -77,11 +74,11 @@ fun TelaEdit(
 
         Button(
             onClick = {
-                //Chama o ViewModel diretamente. O threading é responsabilidade do ViewModel.
+
                 val contatoEditado = Contato(
                     nome = nome,
                     numero = numeroTelefone,
-                    id = contatoEditar?.id ?: 0 // Garante um ID válido ou 0
+                    id = contatoEditar?.id ?: 0
                 )
                 contatoViewModel.atualizarContato(contato = contatoEditado)
                 navController.popBackStack()

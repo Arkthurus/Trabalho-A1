@@ -13,23 +13,17 @@ import com.example.telasparcial.ui.viewmodel.AuthViewModel
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
-    onNavigateToSignUp: () -> Unit // Função para navegar para a tela de cadastro
+    onNavigateToSignUp: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // 1. Coletar o estado de loading
     val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
-    // 2. Coletar o estado do usuário para navegação
+
     val userState by authViewModel.userState.collectAsStateWithLifecycle()
 
-    // 3. Efeito colateral para navegar após login bem-sucedido
     LaunchedEffect(userState) {
         if (userState != null) {
-            // A navegação real para a TelaLista será tratada no NavHost,
-            // mas aqui podemos garantir que se o usuário for não-nulo, saímos da tela de Login.
-            // Para projetos maiores, o ideal é usar um evento de navegação.
-            // Aqui confiamos que o NavHost fará a transição corretamente.
         }
     }
 
@@ -42,10 +36,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isLoading) {
-            // ⚠️ Mostra o progresso no centro enquanto carrega
             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         } else {
-            // Campos e botões são mostrados apenas quando não está carregando
 
             OutlinedTextField(
                 value = email,

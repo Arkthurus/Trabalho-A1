@@ -23,7 +23,7 @@ class GrupoContatoRepository (private val grupoContatoDAO: GrupoContatoDAO){ // 
             grupoContatoDAO.removerLigacao(grupoId, contatoId)
         } catch (e: Exception) {
             Log.e("GrupoContatoRepository", "Erro no DAO ao remover ligação: ${e.message}")
-            throw e // Relança para ser tratado no ViewModel, se necessário
+            throw e
         }
     }
 }

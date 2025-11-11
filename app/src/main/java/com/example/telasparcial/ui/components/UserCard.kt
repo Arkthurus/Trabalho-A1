@@ -32,7 +32,7 @@ fun UserCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
-            // Adicionando padding para melhor espaçamento
+
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -43,21 +43,20 @@ fun UserCard(
                 tint = Color.DarkGray
             )
 
-            // Espaçador entre o ícone e o texto
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
                 Text(
                     text = nome,
-                    // Usando tipografia do tema para acessibilidade
+
                     style = MaterialTheme.typography.titleLarge
                 )
 
                 Text(
                     text = telefone,
-                    // Usando tipografia do tema
+
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray // Deixando o número um pouco mais discreto
+                    color = Color.Gray
                 )
             }
         }
@@ -68,7 +67,7 @@ fun UserCard(
 @Composable
 @Preview(showBackground = true)
 fun UserCardPreview() {
-    // Agora o Preview é funcional, pois passamos dados
+
     UserCard(
         nome = "Nome de usuário",
         telefone = "(99) 99999-9999"

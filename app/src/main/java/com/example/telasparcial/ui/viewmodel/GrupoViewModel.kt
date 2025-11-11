@@ -40,7 +40,6 @@ class GrupoViewModel (private val grupoRepository: GrupoRepository) : ViewModel(
         if (grupo.nome.isBlank()) return
 
         viewModelScope.launch {
-            // ✅ OTIMIZADO: Remoção da atualização manual do _uiState
             grupoRepository.inserirGrupo(grupo)
         }
     }
