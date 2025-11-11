@@ -44,8 +44,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.R
-import com.example.telasparcial.ui.viewmodel.AdviceViewModel
-import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.AdviceViewModel
+import com.example.telasparcial.viewmodel.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)

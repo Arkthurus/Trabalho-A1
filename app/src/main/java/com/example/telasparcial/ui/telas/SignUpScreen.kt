@@ -1,7 +1,6 @@
 package com.example.telasparcial.ui.telas
 
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.AuthViewModel
 
 @Composable
 fun SignUpScreen(

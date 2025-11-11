@@ -1,4 +1,4 @@
-package com.example.telasparcial.ui.viewmodel
+package com.example.telasparcial.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,6 @@ import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.entities.pojos.GrupoComContatos
 import com.example.telasparcial.data.repository.GrupoContatoRepository
-import com.example.telasparcial.data.repository.GrupoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

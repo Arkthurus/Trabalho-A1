@@ -1,4 +1,4 @@
-package com.example.telasparcial.ui.viewmodel
+package com.example.telasparcial.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

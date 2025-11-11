@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.telasparcial.ui.nav.AppNav
 import com.example.telasparcial.ui.theme.TelasParcialTheme
-import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.AuthViewModel
 
 
 class MainActivity : ComponentActivity() {

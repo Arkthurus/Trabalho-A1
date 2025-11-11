@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(

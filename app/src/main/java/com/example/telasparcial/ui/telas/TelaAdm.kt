@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.AuthViewModel
 
 // >> NOVAS IMPORTAÇÕES NECESSÁRIAS
 import androidx.compose.runtime.LaunchedEffect

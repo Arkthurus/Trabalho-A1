@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
-import com.example.telasparcial.ui.viewmodel.ContatoViewModel
+import com.example.telasparcial.viewmodel.ContatoViewModel
 
 @Composable
 fun TelaEdit(
