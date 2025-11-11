@@ -1,5 +1,6 @@
 package com.example.telasparcial.ui.telas
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -34,19 +35,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
-import com.example.telasparcial.viewmodel.AuthViewModel
-import com.example.telasparcial.viewmodel.ContatoViewModel
-import com.example.telasparcial.viewmodel.GrupoContatoViewModel
-import com.example.telasparcial.viewmodel.GrupoViewModel
+import com.example.telasparcial.ui.viewmodel.AuthViewModel
+import com.example.telasparcial.ui.viewmodel.ContatoViewModel
+import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
+import com.example.telasparcial.ui.viewmodel.GrupoViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -58,6 +65,19 @@ fun TelaLista(
     authViewModel: AuthViewModel
 ) {
     val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
+    val grupoContatosUiState by grupoContatoViewModel.uiState.collectAsStateWithLifecycle()
+    val feedbackMessage by grupoContatosUiState.feedbackMessage.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(feedbackMessage) {
+        feedbackMessage?.let {
+            scope.launch {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                grupoContatoViewModel.clearFeedbackMessage()
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = { BottomBar(navController) }
