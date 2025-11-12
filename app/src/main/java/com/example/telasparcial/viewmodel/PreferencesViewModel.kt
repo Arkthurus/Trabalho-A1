@@ -2,8 +2,6 @@ package com.example.telasparcial.viewmodel
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.telasparcial.data.repository.ContatosRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +14,10 @@ enum class TamanhoDeFonte(val tamanho: Float) {
 }
 
 data class PreferencesUiState(
-    val corDeTexto: Color? = Color(255, 255, 255),
-    val corDeBotao: Color? = Color(98, 170, 163),
-    val corDeFundo: Color? = Color.Black,
-    val corDeCards: Color? = Color.LightGray,
+    val corDeTexto: Color = Color(255, 255, 255),
+    val corDeBotao: Color = Color(98, 170, 163),
+    val corDeFundo: Color = Color.Black,
+    val corDeCards: Color = Color.LightGray,
     val tamanhoDeFonte: TamanhoDeFonte = TamanhoDeFonte.Medio,
 )
 class PreferencesViewModel : ViewModel() {
@@ -39,6 +37,25 @@ class PreferencesViewModel : ViewModel() {
             currentState.copy(corDeBotao = novaCor)
         }
     }
+
+    fun atualizarCorDoTexto(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeTexto = novaCor)
+        }
+    }
+
+    fun atualizarCorDoFundo(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeFundo = novaCor)
+        }
+    }
+
+    fun atualizarCorDosCards(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeCards = novaCor)
+        }
+    }
+
 }
 
 

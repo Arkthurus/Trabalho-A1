@@ -1,6 +1,7 @@
 package com.example.telasparcial.ui.telas
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,9 +39,9 @@ fun TelaEdit(
     preferencesUiState: PreferencesUiState,
 ) {
 
-    val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
+    val contatosUiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
-    val contatoEditar = uiState.contatoEmEdit
+    val contatoEditar = contatosUiState.contatoEmEdit
 
     var nome by remember { mutableStateOf(contatoEditar?.nome ?: "") }
     var numeroTelefone by remember { mutableStateOf(contatoEditar?.numero ?: "") }
@@ -47,19 +50,33 @@ fun TelaEdit(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(preferencesUiState.corDeFundo)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Modificar Contato", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Modificar Contato",
+            style = MaterialTheme.typography.titleLarge,
+            color = preferencesUiState.corDeTexto
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
+
+        // Cores para os textfields
+        val colors = TextFieldDefaults.colors(
+            focusedTextColor = preferencesUiState.corDeTexto,
+            unfocusedTextColor = preferencesUiState.corDeTexto.copy(alpha = .3f),
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent
+        )
 
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = colors
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -70,14 +87,14 @@ fun TelaEdit(
             label = { Text("Número de Telefone") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             readOnly = false,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = colors
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
-
                 val contatoEditado = Contato(
                     nome = nome,
                     numero = numeroTelefone,
@@ -87,9 +104,9 @@ fun TelaEdit(
                 navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
+            colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao)
         ) {
-            Text("Salvar Alterações", color = preferencesUiState.corDeTexto!!)
+            Text("Salvar Alterações", color = preferencesUiState.corDeTexto)
         }
     }
 }
