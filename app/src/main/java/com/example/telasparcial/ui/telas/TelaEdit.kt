@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -85,9 +86,10 @@ fun TelaEdit(
                 contatoViewModel.atualizarContato(contato = contatoEditado)
                 navController.popBackStack()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
         ) {
-            Text("Salvar Alterações")
+            Text("Salvar Alterações", color = preferencesUiState.corDeTexto!!)
         }
     }
 }
