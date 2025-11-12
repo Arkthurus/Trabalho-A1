@@ -10,21 +10,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-
-// >> NOVAS IMPORTAÇÕES NECESSÁRIAS
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.telasparcial.ui.state.PreferencesUiState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.example.telasparcial.viewmodel.PreferencesViewModel
 
 data class UserAdm(
     val uid: String,
@@ -35,17 +34,20 @@ data class UserAdm(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaAdm(
-    navController: NavController
+    navController: NavController,
+    preferencesViewModel: PreferencesViewModel // 1. Receba a instância do ViewModel
 ) {
-    // Estados para controlar se os interruptores estão ligados ou desligados
-    val temaEscuroSistema = isSystemInDarkTheme()
-    var temaEscuroAtivado by remember { mutableStateOf(temaEscuroSistema) }
-    var preferencesUiState by remember { mutableStateOf(PreferencesUiState()) }
+    // 2. Observe o estado do ViewModel. O app irá recompor quando ele mudar.
+    val preferencesUiState by preferencesViewModel.uiState.collectAsStateWithLifecycle()
 
+    // Estado local apenas para controlar a visibilidade do seletor de cores
+    var mostrarSeletorDeCor by remember { mutableStateOf(false) }
+
+    // Determina o estado inicial do switch do tema
+    val temaSwitch = preferencesUiState.isTemaEscuro ?: isSystemInDarkTheme()
 
     Scaffold(
         topBar = {
-            // Barra superior com título e botão de voltar
             TopAppBar(
                 title = { Text("Configurações") },
                 navigationIcon = {
@@ -59,63 +61,61 @@ fun TelaAdm(
             )
         }
     ) { innerPadding ->
-        // Coluna com rolagem para o conteúdo da tela
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Adiciona a barra de rolagem
+                .verticalScroll(rememberScrollState())
         ) {
-            // Item de configuração para tema escuro
             ConfiguracaoItem(
                 titulo = "Tema Escuro",
                 descricao = "Reduza o brilho e melhore a visualização à noite.",
-                ativado = temaEscuroAtivado,
-                onCheckedChange = { temaEscuroAtivado = it }
+                ativado = temaSwitch,
+                onCheckedChange = { novoEstado ->
+                    // 3. Notifique o ViewModel sobre a mudança
+                    preferencesViewModel.atualizarTemaEscuro(novoEstado)
+                }
             )
-            // 1. Estado para armazenar a cor atual do botão.
-            var corDoBotao by remember { mutableStateOf(Color(0xFF6200EE)) }
-            // 2. Estado para controlar a visibilidade do seletor de cores (AlertDialog).
-            var mostrarSeletorDeCor by remember { mutableStateOf(false) }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Button(
-                onClick = {mostrarSeletorDeCor = true},
-                colors = ButtonDefaults.buttonColors(containerColor = corDoBotao),
+                onClick = { mostrarSeletorDeCor = true },
+                // 4. Use a cor do botão vinda diretamente do ViewModel
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!),
                 modifier = Modifier
-                    .padding(start = 10.dp, top = 40.dp)
                     .fillMaxWidth()
                     .height(70.dp)
-            ) {Text("Cor dos Botões", color = preferencesUiState.corDeTexto!!)}//n vai ser nulo
+            ) {
+                // 5. Use a cor do texto vinda diretamente do ViewModel
+                Text("Cor dos Botões", color = preferencesUiState.corDeTexto!!)
+            }
 
-            //Exemplo de implementação no resto do code
-            Button(onClick = {},
-                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao?: Color(255,255,255))) { }
-            //fim do Exemplo
-
-            // 3. Se `mostrarSeletorDeCor` for verdadeiro, o AlertDialog é exibido.
+            // O AlertDialog só é exibido quando 'mostrarSeletorDeCor' é true
             if (mostrarSeletorDeCor) {
                 SeletorDeCorRGBDialog(
-                    corInicial = corDoBotao,
+                    corInicial = preferencesUiState.corDeBotao!!,
                     onCorSelecionada = { novaCor ->
-                        preferencesUiState = preferencesUiState.copy(corDeBotao = novaCor)
-                        corDoBotao = novaCor // Atualiza a cor do botão.
-                        mostrarSeletorDeCor = false // Fecha o seletor.
+                        // 6. Notifique o ViewModel que a cor mudou
+                        preferencesViewModel.atualizarCorDoBotao(novaCor)
+                        mostrarSeletorDeCor = false // Fecha o seletor
                     },
                     onDismiss = {
-                        mostrarSeletorDeCor = false // Fecha o seletor se o usuário clicar fora.
+                        mostrarSeletorDeCor = false // Fecha se o usuário clicar fora
                     }
                 )
             }
         }
     }
 }
+
 @Composable
 fun SeletorDeCorRGBDialog(
     corInicial: Color,
     onCorSelecionada: (Color) -> Unit,
     onDismiss: () -> Unit
 ) {
-    // Estados para cada canal de cor (0.0f a 1.0f).
     var r by remember { mutableStateOf(corInicial.red) }
     var g by remember { mutableStateOf(corInicial.green) }
     var b by remember { mutableStateOf(corInicial.blue) }
@@ -127,33 +127,24 @@ fun SeletorDeCorRGBDialog(
         title = { Text("Selecione uma Cor") },
         text = {
             Column {
-                // Pré-visualização da cor.
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp)
                         .padding(vertical = 8.dp)
-                        .clip(RoundedCornerShape(8.dp)) // Arredonda as bordas
-                        .background(novaCor) // Aplica a cor de fundo
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(novaCor)
                 )
-
-                // Slider para Vermelho (Red)
                 Text(text = "Vermelho: ${(r * 255).toInt()}")
                 Slider(value = r, onValueChange = { r = it })
-
-                // Slider para Verde (Green)
                 Text(text = "Verde: ${(g * 255).toInt()}")
                 Slider(value = g, onValueChange = { g = it })
-
-                // Slider para Azul (Blue)
                 Text(text = "Azul: ${(b * 255).toInt()}")
                 Slider(value = b, onValueChange = { b = it })
             }
         },
         confirmButton = {
-            Button(
-                onClick = { onCorSelecionada(novaCor) }
-            ) {
+            Button(onClick = { onCorSelecionada(novaCor) }) {
                 Text("Confirmar")
             }
         },
@@ -179,9 +170,7 @@ fun ConfiguracaoItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = titulo,
                 fontWeight = FontWeight.Bold,
