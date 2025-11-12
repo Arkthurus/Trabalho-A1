@@ -43,9 +43,6 @@ fun TelaAdm(
     // Estado local apenas para controlar a visibilidade do seletor de cores
     var mostrarSeletorDeCor by remember { mutableStateOf(false) }
 
-    // Determina o estado inicial do switch do tema
-    val temaSwitch = preferencesUiState.isTemaEscuro ?: isSystemInDarkTheme()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,16 +65,6 @@ fun TelaAdm(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            ConfiguracaoItem(
-                titulo = "Tema Escuro",
-                descricao = "Reduza o brilho e melhore a visualização à noite.",
-                ativado = temaSwitch,
-                onCheckedChange = { novoEstado ->
-                    // 3. Notifique o ViewModel sobre a mudança
-                    preferencesViewModel.atualizarTemaEscuro(novoEstado)
-                }
-            )
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
@@ -156,36 +143,4 @@ fun SeletorDeCorRGBDialog(
     )
 }
 
-@Composable
-fun ConfiguracaoItem(
-    titulo: String,
-    descricao: String,
-    ativado: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = titulo,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-            Text(
-                text = descricao,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-        }
-        Switch(
-            checked = ativado,
-            onCheckedChange = onCheckedChange,
-            modifier = Modifier.padding(start = 16.dp)
-        )
-    }
-}
+

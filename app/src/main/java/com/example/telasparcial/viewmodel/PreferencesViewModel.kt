@@ -18,8 +18,9 @@ enum class TamanhoDeFonte(val tamanho: Float) {
 data class PreferencesUiState(
     val corDeTexto: Color? = Color(255, 255, 255),
     val corDeBotao: Color? = Color(98, 170, 163),
+    val corDeFundo: Color? = Color.Black,
+    val corDeCards: Color? = Color.LightGray,
     val tamanhoDeFonte: TamanhoDeFonte = TamanhoDeFonte.Medio,
-    val isTemaEscuro: Boolean? = null
 )
 class PreferencesViewModel : ViewModel() {
 
@@ -36,16 +37,6 @@ class PreferencesViewModel : ViewModel() {
     fun atualizarCorDoBotao(novaCor: Color) {
         _uiState.update { currentState ->
             currentState.copy(corDeBotao = novaCor)
-        }
-    }
-
-    /**
-     * Atualiza a preferência do tema escuro.
-     * @param ativado O novo estado do tema escuro.
-     */
-    fun atualizarTemaEscuro(ativado: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(isTemaEscuro = ativado)
         }
     }
 }
