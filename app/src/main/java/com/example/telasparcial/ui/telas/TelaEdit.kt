@@ -74,7 +74,7 @@ fun TelaEdit(
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
-            label = { Text("Nome") },
+            label = { Text("Nome", color = preferencesUiState.corDeTexto) },
             modifier = Modifier.fillMaxWidth(),
             colors = colors
         )
@@ -84,7 +84,7 @@ fun TelaEdit(
         OutlinedTextField(
             value = numeroTelefone,
             onValueChange = { numeroTelefone = it },
-            label = { Text("Número de Telefone") },
+            label = { Text("Número de Telefone", color = preferencesUiState.corDeTexto) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             readOnly = false,
             modifier = Modifier.fillMaxWidth(),
