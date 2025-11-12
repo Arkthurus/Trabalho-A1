@@ -1,6 +1,7 @@
 package com.example.telasparcial.ui.telas
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +26,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.viewmodel.PreferencesViewModel
+import com.google.firebase.annotations.concurrent.Background
 
 enum class DialogoAtivo {
     COR_BOTOES,
@@ -75,26 +79,38 @@ fun TelaAdm(
                             contentDescription = "Voltar"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = preferencesUiState.corDeFundo,
+                    titleContentColor = preferencesUiState.corDeTexto
+                )
             )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .background(preferencesUiState.corDeFundo)
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+            val buttonModifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+                .border(
+                    1.dp,
+                    Color.White,
+                    RoundedCornerShape(36.dp)
+                )
+
             // Diálogo de cor dos botões
             Button(
                 onClick = {
                     dialogoAtivo = DialogoAtivo.COR_BOTOES
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
+                modifier = buttonModifier
             ) {
                 Text("Cor dos Botões", color = preferencesUiState.corDeTexto)
             }
@@ -107,9 +123,7 @@ fun TelaAdm(
                     dialogoAtivo = DialogoAtivo.COR_TEXTO
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
+                modifier = buttonModifier
             ) {
                 Text("Cor do Texto", color = preferencesUiState.corDeTexto)
             }
@@ -122,9 +136,7 @@ fun TelaAdm(
                     dialogoAtivo = DialogoAtivo.COR_CARTOES
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeCards),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
+                modifier = buttonModifier
             ) {
                 Text("Cor dos Cartões", color = preferencesUiState.corDeTexto)
             }
@@ -137,9 +149,7 @@ fun TelaAdm(
                     dialogoAtivo = DialogoAtivo.COR_FUNDO
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeFundo),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
+                modifier = buttonModifier
             ) {
                 Text("Cor do Fundo", color = preferencesUiState.corDeTexto)
             }
@@ -203,7 +213,8 @@ fun SeletorDeCorRGBDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecione uma Cor") },
         text = {
-            Column {
+            Column(
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
