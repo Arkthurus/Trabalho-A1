@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.telasparcial.ui.state.PreferencesUiState
 
 data class UserAdm(
     val uid: String,
@@ -39,6 +40,8 @@ fun TelaAdm(
     // Estados para controlar se os interruptores estão ligados ou desligados
     val temaEscuroSistema = isSystemInDarkTheme()
     var temaEscuroAtivado by remember { mutableStateOf(temaEscuroSistema) }
+    var preferencesUiState by remember { mutableStateOf(PreferencesUiState()) }
+
 
     Scaffold(
         topBar = {
@@ -78,13 +81,23 @@ fun TelaAdm(
             Button(
                 onClick = {mostrarSeletorDeCor = true},
                 colors = ButtonDefaults.buttonColors(containerColor = corDoBotao),
-                modifier = Modifier.padding(start = 10.dp, top = 40.dp).fillMaxWidth().height(70.dp)
-            ) {Text("Cor dos Botões")}
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 40.dp)
+                    .fillMaxWidth()
+                    .height(70.dp)
+            ) {Text("Cor dos Botões", color = preferencesUiState.corDeTexto!!)}//n vai ser nulo
+
+            //Exemplo de implementação no resto do code
+            Button(onClick = {},
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao?: Color(255,255,255))) { }
+            //fim do Exemplo
+
             // 3. Se `mostrarSeletorDeCor` for verdadeiro, o AlertDialog é exibido.
             if (mostrarSeletorDeCor) {
                 SeletorDeCorRGBDialog(
                     corInicial = corDoBotao,
                     onCorSelecionada = { novaCor ->
+                        preferencesUiState = preferencesUiState.copy(corDeBotao = novaCor)
                         corDoBotao = novaCor // Atualiza a cor do botão.
                         mostrarSeletorDeCor = false // Fecha o seletor.
                     },
