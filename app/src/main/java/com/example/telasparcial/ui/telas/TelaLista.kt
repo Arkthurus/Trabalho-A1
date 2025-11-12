@@ -47,6 +47,7 @@ import com.example.telasparcial.viewmodel.AuthViewModel
 import com.example.telasparcial.viewmodel.ContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoViewModel
+import com.example.telasparcial.viewmodel.PreferencesViewModel
 
 
 @Composable
@@ -55,9 +56,11 @@ fun TelaLista(
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    preferencesViewModel: PreferencesViewModel
 ) {
     val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
+    val preferencesUiState by preferencesViewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         bottomBar = { BottomBar(navController) }
@@ -119,7 +122,8 @@ fun TelaLista(
                     navController,
                     contatoViewModel,
                     grupoViewModel,
-                    grupoContatoViewModel
+                    grupoContatoViewModel,
+                    preferencesUiState
                 )
             }
         }
@@ -235,7 +239,8 @@ fun DuploCtt(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel
+    grupoContatoViewModel: GrupoContatoViewModel,
+    preferencesUiState: com.example.telasparcial.viewmodel.PreferencesUiState
 ) {
 
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
@@ -252,7 +257,8 @@ fun DuploCtt(
                         navController,
                         contatoViewModel,
                         grupoViewModel,
-                        grupoContatoViewModel
+                        grupoContatoViewModel,
+                        preferencesUiState
                     )
                 }
             }
@@ -267,7 +273,8 @@ private fun ContactCard(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel
+    grupoContatoViewModel: GrupoContatoViewModel,
+    preferencesUiState: com.example.telasparcial.viewmodel.PreferencesUiState
 ) {
     // Lógica de I/O removida, agora a responsabilidade é do ViewModel
 
@@ -322,7 +329,8 @@ private fun ContactCard(
                     modifier = Modifier
                         .width(95.dp)
                         .padding(10.dp),
-                    shape = ButtonDefaults.filledTonalShape
+                    shape = ButtonDefaults.filledTonalShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
                 ) {
                     Icon(
                         Icons.Default.Create,
@@ -338,7 +346,8 @@ private fun ContactCard(
                     modifier = Modifier
                         .width(95.dp)
                         .padding(top = 10.dp, bottom = 10.dp, end = 10.dp),
-                    shape = ButtonDefaults.filledTonalShape
+                    shape = ButtonDefaults.filledTonalShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
                 ) {
                     Icon(
                         Icons.Default.Delete,
