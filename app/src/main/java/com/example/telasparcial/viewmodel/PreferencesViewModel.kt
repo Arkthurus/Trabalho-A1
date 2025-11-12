@@ -49,6 +49,13 @@ class PreferencesViewModel : ViewModel() {
             currentState.copy(corDeFundo = novaCor)
         }
     }
+
+    fun atualizarCorDosCards(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeCards = novaCor)
+        }
+    }
+
 }
 
 
