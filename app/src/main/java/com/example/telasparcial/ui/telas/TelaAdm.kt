@@ -1,8 +1,11 @@
 package com.example.telasparcial.ui.telas
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -16,8 +19,15 @@ import com.example.telasparcial.viewmodel.AuthViewModel
 
 // >> NOVAS IMPORTAÇÕES NECESSÁRIAS
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class UserAdm(
     val uid: String,
@@ -31,24 +41,19 @@ fun TelaAdm(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    // 1. CHAME O MÉTODO DE BUSCA DE USUÁRIOS AO CARREGAR A TELA
-    LaunchedEffect(Unit) {
-        authViewModel.fetchRegisteredUsers()
-    }
-
-    // 2. COLETA O ESTADO (LISTA DE USUÁRIOS) DO VIEWMODEL
-    val allUsers by authViewModel.allRegisteredUsers.collectAsStateWithLifecycle()
-    val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
-
+    // Estados para controlar se os interruptores estão ligados ou desligados
+    val temaEscuroSistema = isSystemInDarkTheme()
+    var temaEscuroAtivado by remember { mutableStateOf(temaEscuroSistema) }
 
     Scaffold(
         topBar = {
+            // Barra superior com título e botão de voltar
             TopAppBar(
-                title = { Text("Painel Administrativo") },
+                title = { Text("Configurações") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"
                         )
                     }
@@ -56,78 +61,58 @@ fun TelaAdm(
             )
         }
     ) { innerPadding ->
+        // Coluna com rolagem para o conteúdo da tela
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 8.dp)
+                .padding(16.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()) // Adiciona a barra de rolagem
         ) {
-            Text(
-                text = "Lista de Usuários Cadastrados (${allUsers.size})",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
+            // Item de configuração para tema escuro
+            ConfiguracaoItem(
+                titulo = "Tema Escuro",
+                descricao = "Reduza o brilho e melhore a visualização à noite.",
+                ativado = temaEscuroAtivado,
+                onCheckedChange = { temaEscuroAtivado = it }
             )
-
-            // 3. EXIBIÇÃO CONDICIONAL DE CARREGAMENTO OU LISTA
-            if (isLoading && allUsers.isEmpty()) {
-                Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                // Lista de Usuários
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // 4. USA A LISTA REAL (allUsers)
-                    items(allUsers) { user ->
-                        UserListItem(user = user) {
-                            // Ação futura: Navegar para tela de edição/detalhes do usuário
-                        }
-                    }
-                }
-            }
         }
     }
 }
 
+
 @Composable
-fun UserListItem(user: UserAdm, onClick: () -> Unit) {
-    Card(
+fun ConfiguracaoItem(
+    titulo: String,
+    descricao: String,
+    ativado: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (user.isAdm) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-        )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.weight(1f)
         ) {
-            Column {
-                Text(
-                    text = user.email,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "UID: ${user.uid.take(10)}...", // Mostrar apenas o início do UID
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
-            if (user.isAdm) {
-                Text(
-                    text = "ADMIN",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+            Text(
+                text = titulo,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = descricao,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
+        Switch(
+            checked = ativado,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.padding(start = 16.dp)
+        )
     }
 }
