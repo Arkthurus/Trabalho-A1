@@ -157,8 +157,7 @@ fun AppNav(authViewModel: AuthViewModel) {
 
         composable("TelaAdm") {
             TelaAdm(
-                navController = navController,
-                authViewModel = authViewModel
+                navController = navController
             )
         }
     }
