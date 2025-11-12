@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,7 +31,7 @@ import com.example.telasparcial.viewmodel.ContatoViewModel
 @Composable
 fun AddCtt(
     numeroCtt: String,
-
+    preferencesUiState: com.example.telasparcial.viewmodel.PreferencesUiState,
     contatoViewModel: ContatoViewModel,
     navController: NavHostController
 ) {
@@ -82,7 +83,8 @@ fun AddCtt(
                 navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = name.isNotBlank()
+            enabled = name.isNotBlank(),
+            colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
         ) {
             Text("Salvar Contato")
         }
