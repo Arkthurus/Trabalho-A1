@@ -1,5 +1,6 @@
 package com.example.telasparcial.ui.telas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.material.icons.filled.AddCircle
@@ -32,6 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.ui.graphics.Color
 import com.example.telasparcial.viewmodel.PreferencesUiState
 
 // Removida a anotação @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -43,20 +46,22 @@ fun TelaDiscagem(
     preferencesUiState: PreferencesUiState
 ) {
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState)},
+        modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+        containerColor = preferencesUiState.corDeFundo
     ) { innerPadding -> // ✅ Recebe o padding do Scaffold
         Column(
             // ✅ CORREÇÃO: Aplica o padding interno, especialmente o inferior
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding).background(color = preferencesUiState.corDeFundo)
         ) {
-            Discagem(onNavigateToAddCtt)
+            Discagem(onNavigateToAddCtt, preferencesUiState)
         }
     }
 }
 
 // 🎯 MELHORIA: Usando componentes padrão do Material3 para a NavigationBar
 @Composable
-fun BottomBar(navController : NavController) {
+fun BottomBar(navController: NavController, preferencesUiState: PreferencesUiState) {
     val currentRoute = remember { mutableStateOf("TelaDiscar") } // Estado básico para controle visual
 
     // Definição simples dos itens de navegação
@@ -66,13 +71,14 @@ fun BottomBar(navController : NavController) {
         Pair(Icons.Default.AccountCircle, "Perfil") to "TabScreen"
     )
 
-    NavigationBar {
+    NavigationBar(containerColor = Color.DarkGray,
+                  contentColor = preferencesUiState.corDeBotao){
         items.forEach { (iconPair, route) ->
             val (icon, label) = iconPair
             NavigationBarItem(
-                icon = { Icon(icon, contentDescription = label) },
-                label = { Text(label) },
-                selected = currentRoute.value == route, // Verifica se a rota está selecionada
+                icon = { Icon(icon, contentDescription = label, modifier = Modifier.background(preferencesUiState.corDeBotao, shape = CircleShape).width(70.dp).height(35.dp)) },
+                label = { Text(label, color = preferencesUiState.corDeTexto) },
+                selected = false, // Verifica se a rota está selecionada
                 onClick = {
                     currentRoute.value = route
                     navController.navigate(route) {
@@ -90,12 +96,13 @@ fun BottomBar(navController : NavController) {
 }
 
 @Composable
-fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
+fun Discagem(onNavigateToAddCtt: (String) -> Unit, preferencesUiState: PreferencesUiState) {
     // Estado que guarda o número digitado
     var phoneNumber by remember { mutableStateOf("") }
 
     Surface(
         modifier = Modifier.padding(16.dp),
+        color = preferencesUiState.corDeFundo
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -111,6 +118,7 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
             ) {
                 Text(
                     text = phoneNumber,
+                    color = preferencesUiState.corDeTexto,
                     fontSize = 28.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -139,30 +147,30 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    NumberButton("1", onClick = { phoneNumber += "1" })
-                    NumberButton("2", onClick = { phoneNumber += "2" })
-                    NumberButton("3", onClick = { phoneNumber += "3" })
+                    NumberButton("1", onClick = { phoneNumber += "1" }, preferencesUiState)
+                    NumberButton("2", onClick = { phoneNumber += "2" }, preferencesUiState)
+                    NumberButton("3", onClick = { phoneNumber += "3" }, preferencesUiState)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    NumberButton("4", onClick = { phoneNumber += "4" })
-                    NumberButton("5", onClick = { phoneNumber += "5" })
-                    NumberButton("6", onClick = { phoneNumber += "6" })
+                    NumberButton("4", onClick = { phoneNumber += "4" }, preferencesUiState)
+                    NumberButton("5", onClick = { phoneNumber += "5" }, preferencesUiState)
+                    NumberButton("6", onClick = { phoneNumber += "6" }, preferencesUiState)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    NumberButton("7", onClick = { phoneNumber += "7" })
-                    NumberButton("8", onClick = { phoneNumber += "8" })
-                    NumberButton("9", onClick = { phoneNumber += "9" })
+                    NumberButton("7", onClick = { phoneNumber += "7" }, preferencesUiState)
+                    NumberButton("8", onClick = { phoneNumber += "8" }, preferencesUiState)
+                    NumberButton("9", onClick = { phoneNumber += "9" }, preferencesUiState)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    NumberButton("*", onClick = { phoneNumber += "*" })
-                    NumberButton("0", onClick = { phoneNumber += "0" })
-                    NumberButton("#", onClick = { phoneNumber += "#" })
+                    NumberButton("*", onClick = { phoneNumber += "*" }, preferencesUiState)
+                    NumberButton("0", onClick = { phoneNumber += "0" }, preferencesUiState)
+                    NumberButton("#", onClick = { phoneNumber += "#" }, preferencesUiState)
                 }
                 Spacer(modifier = Modifier.height(40.dp))
 
@@ -173,7 +181,8 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
                         contentDescription = "Ligar",
                         onClick = {
                             // Ação: Iniciar discagem. Adicione lógica aqui se necessário.
-                        }
+                        },
+                        modifier = Modifier.background(preferencesUiState.corDeBotao, shape = CircleShape).width(70.dp).height(35.dp)
                     )
                     Spacer(modifier = Modifier.width(70.dp))
                     CallActionButton(
@@ -184,7 +193,8 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
                             if (phoneNumber.isNotBlank()) {
                                 onNavigateToAddCtt(phoneNumber)
                             }
-                        }
+                        },
+                        modifier = Modifier.background(preferencesUiState.corDeBotao, shape = CircleShape).width(70.dp).height(35.dp)
                     )
                 }
             }
@@ -194,12 +204,13 @@ fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
 
 // Componentes auxiliares inalterados
 @Composable
-fun NumberButton(digit: String, onClick: () -> Unit) {
+fun NumberButton(digit: String, onClick: () -> Unit, preferencesUiState: PreferencesUiState) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(110.dp)
+        modifier = Modifier.size(110.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao)
     ) {
-        Text(digit, fontSize = 32.sp)
+        Text(digit, fontSize = preferencesUiState.tamanhoDeFonte.tamanho, color = preferencesUiState.corDeTexto)
     }
 }
 
@@ -207,7 +218,8 @@ fun NumberButton(digit: String, onClick: () -> Unit) {
 fun CallActionButton(
     icon: ImageVector,
     contentDescription: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier
 ) {
     IconButton(
         onClick = onClick,

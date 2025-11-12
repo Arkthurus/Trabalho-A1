@@ -3,6 +3,7 @@ package com.example.telasparcial.ui.telas
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -46,15 +48,22 @@ import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.R
 import com.example.telasparcial.viewmodel.AdviceViewModel
 import com.example.telasparcial.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun TabScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
     val tabNavController = rememberNavController()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState) },
+        containerColor = preferencesUiState.corDeFundo,
+        modifier = Modifier.background(preferencesUiState.corDeFundo)
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
@@ -64,7 +73,10 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
                         selectedTabIndex = 0
                         tabNavController.navigate("meucodigo")
                     },
-                    text = { Text("Meu código") }
+                    selectedContentColor = preferencesUiState.corDeBotao,
+
+                    modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+                    text = { Text("Meu código", color = preferencesUiState.corDeTexto) }
                 )
 
                 Tab(
@@ -73,16 +85,17 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
                         selectedTabIndex = 1
                         tabNavController.navigate("escanearcodigo")
                     },
-                    text = { Text("Escanear Código") }
+                    modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+                    text = { Text("Escanear Código", color = preferencesUiState.corDeTexto) }
                 )
             }
 
             NavHost(navController = tabNavController, startDestination = "meucodigo") {
                 composable("meucodigo") {
 
-                    TelaQR(navController, authViewModel)
+                    TelaQR(navController, authViewModel, preferencesUiState)
                 }
-                composable("escanearcodigo") { TelaEscanearCodigo() }
+                composable("escanearcodigo") { TelaEscanearCodigo(preferencesUiState) }
             }
         }
     }
@@ -90,17 +103,23 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
 
 
 @Composable
-fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
+fun TelaQR(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
 
     val context = LocalContext.current
 
     Surface(
         modifier = Modifier
             .fillMaxHeight()
+            .background(color = preferencesUiState.corDeFundo)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally){
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.background(color = preferencesUiState.corDeFundo)){
             Spacer(Modifier.height(10.dp))
-            ProfileStats(navController, authViewModel)
+            ProfileStats(navController, authViewModel, preferencesUiState)
             Spacer(Modifier.height(10.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -116,7 +135,7 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
 
             Text(
                 text = advice,
-
+                color = preferencesUiState.corDeTexto,
                 style = androidx.compose.material.MaterialTheme.typography.h3.copy(
                     lineHeight = 35.sp
                 ),
@@ -136,15 +155,17 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                         .fillMaxWidth(.85f)
                         .height(50.dp)
                         .align(Alignment.TopCenter)
-                        .padding(top = 5.dp)
+                        .padding(top = 5.dp),
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao)
                 ) {
                     Text("Novo Conselho",
-                        color = Color.White)
+                        color = preferencesUiState.corDeTexto)
                 }
 
                 Button(onClick = {
                     navController.navigate("TelaEditUSER")
                 },
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
@@ -153,12 +174,13 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                 ){
                     Text("Editar User",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
-                        color = Color.White)
+                        color = preferencesUiState.corDeTexto)
                 }
                 Button(
                     onClick = {
                         authViewModel.desLogar()
                     },
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
@@ -167,7 +189,7 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
                 ) {
                     Text("Deslogar",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
-                        color = Color.White
+                        color = preferencesUiState.corDeTexto
                     )
                 }
             }
@@ -177,7 +199,7 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
 
 
 @Composable
-fun TelaEscanearCodigo() {
+fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
     val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -189,7 +211,7 @@ fun TelaEscanearCodigo() {
                 .padding(vertical = 25.dp)
         ) {
             Icon(Icons.Default.Share, "Icone share")
-            Text("Aponte sua câmera para o código QR de alguém!")
+            Text("Aponte sua câmera para o código QR de alguém!", color = preferencesUiState.corDeTexto)
         }
 
         Image(
@@ -207,6 +229,7 @@ fun TelaEscanearCodigo() {
                     Toast.LENGTH_SHORT
                 ).show()
             },
+            colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
             modifier = Modifier
                 .fillMaxWidth(.85f)
                 .padding(top = 100.dp)
@@ -216,7 +239,7 @@ fun TelaEscanearCodigo() {
             Text(
                 "Escanear Código",
                 style = MaterialTheme.typography.headlineSmall,
-                color = Color.White // Cor branca adicionada
+                color = preferencesUiState.corDeTexto
             )
         }
     }
@@ -224,7 +247,11 @@ fun TelaEscanearCodigo() {
 
 
 @Composable
-fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
+fun ProfileStats(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
 
     // 1. Coletar o estado do usuário e de loading do ViewModel
     val userState by authViewModel.userState.collectAsStateWithLifecycle()
@@ -286,7 +313,8 @@ fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
 
         Text(
             text = "$emailShow",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = preferencesUiState.corDeTexto
         )
     }
 }

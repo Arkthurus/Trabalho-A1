@@ -102,7 +102,6 @@ fun AppNav(authViewModel: AuthViewModel) {
                     grupoViewModel = grupoViewModel,
                     grupoContatoViewModel = grupoContatoViewModel,
                     authViewModel = authViewModel,
-                    preferencesViewModel = preferencesViewModel,
                     preferencesUiState = preferencesUiState
                 )
             }else{
@@ -122,7 +121,6 @@ fun AppNav(authViewModel: AuthViewModel) {
                 grupoViewModel = grupoViewModel,
                 grupoContatoViewModel = grupoContatoViewModel,
                 authViewModel = authViewModel,
-                preferencesViewModel = preferencesViewModel,
                 preferencesUiState = preferencesUiState
             )
         }
@@ -151,7 +149,7 @@ fun AppNav(authViewModel: AuthViewModel) {
             )
         }
         composable("TabScreen") {
-            TabScreen(navController, authViewModel)
+            TabScreen(navController, authViewModel, preferencesUiState)
         }
         composable(
             route = "TelaAddCtt/{numeroCtt}",
@@ -167,8 +165,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                 navController,
             )
         }
-        composable("meuCodigo") { TelaQR(navController, authViewModel) }
-        composable("escanearCodigo") { TelaEscanearCodigo() }
+        composable("meuCodigo") { TelaQR(navController, authViewModel, preferencesUiState) }
+        composable("escanearCodigo") { TelaEscanearCodigo(preferencesUiState) }
 
         composable("TelaAdm") {
             TelaAdm(

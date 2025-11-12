@@ -1,9 +1,7 @@
 package com.example.telasparcial.ui.telas
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
@@ -31,7 +28,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -48,8 +45,6 @@ import com.example.telasparcial.viewmodel.ContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoViewModel
 import com.example.telasparcial.viewmodel.PreferencesUiState
-import com.example.telasparcial.viewmodel.PreferencesViewModel
-
 
 @Composable
 fun TelaLista(
@@ -58,21 +53,21 @@ fun TelaLista(
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
     authViewModel: AuthViewModel,
-    preferencesViewModel: PreferencesViewModel,
     preferencesUiState: PreferencesUiState
 ) {
     val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
 
 
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState) },
+        modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+        containerColor = preferencesUiState.corDeFundo
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
+                .background(color = preferencesUiState.corDeFundo)
         ) {
-            item { Spacer(modifier = Modifier.height(5.dp)) }
-
             // Só vai renderizar essa espelunca se o user for admin
             if (isAdmin) {
                 item {
@@ -104,7 +99,8 @@ fun TelaLista(
                     navController,
                     contatoViewModel,
                     grupoViewModel,
-                    grupoContatoViewModel
+                    grupoContatoViewModel,
+                    preferencesUiState
                 )
             }
             item { Spacer(modifier = Modifier.height(10.dp)) }
@@ -113,7 +109,8 @@ fun TelaLista(
                     navController,
                     contatoViewModel,
                     grupoViewModel,
-                    grupoContatoViewModel
+                    grupoContatoViewModel,
+                    preferencesUiState
                 )
             }
             item { Spacer(modifier = Modifier.height(15.dp)) }
@@ -140,6 +137,7 @@ private fun FavoriteContacts(
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
+    preferencesUiState: PreferencesUiState,
 ) {
 
     val uiStateGrupoCtt by grupoContatoViewModel.uiState.collectAsStateWithLifecycle()
@@ -152,7 +150,7 @@ private fun FavoriteContacts(
 
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = preferencesUiState.corDeCards,
         ),
         modifier = Modifier
             .width(420.dp)
@@ -164,6 +162,7 @@ private fun FavoriteContacts(
                 text = "Favoritos",
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
+                color = preferencesUiState.corDeTexto
             )
             LazyRow {
                 items(contatos) { contato ->
@@ -207,13 +206,14 @@ private fun RecentContactsList(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel
+    grupoContatoViewModel: GrupoContatoViewModel,
+    preferencesUiState: PreferencesUiState
 ) {
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Transparent,
         ),
         modifier = Modifier.size(width = 400.dp, height = 270.dp)
     ) {
@@ -221,6 +221,7 @@ private fun RecentContactsList(
             text = "Recentes",
             modifier = Modifier.padding(start = 35.dp),
             textAlign = TextAlign.Center,
+            color = preferencesUiState.corDeTexto
         )
         LazyColumn {
             items(uiState.lista4Contatos) { contato ->
@@ -229,7 +230,8 @@ private fun RecentContactsList(
                     contato,
                     contatoViewModel,
                     grupoViewModel,
-                    grupoContatoViewModel
+                    grupoContatoViewModel,
+                    preferencesUiState
                 )
             }
         }
@@ -242,7 +244,7 @@ fun DuploCtt(
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
-    preferencesUiState: com.example.telasparcial.viewmodel.PreferencesUiState
+    preferencesUiState: PreferencesUiState
 ) {
 
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
@@ -276,14 +278,13 @@ private fun ContactCard(
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
-    preferencesUiState: com.example.telasparcial.viewmodel.PreferencesUiState
+    preferencesUiState: PreferencesUiState
 ) {
-    // Lógica de I/O removida, agora a responsabilidade é do ViewModel
 
     Spacer(modifier = Modifier.width(20.dp))
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = preferencesUiState.corDeCards,
         ),
         modifier = Modifier
             .size(width = 190.dp, height = 170.dp)
@@ -313,12 +314,14 @@ private fun ContactCard(
                     text = contato.nome,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center,
+                    color = preferencesUiState.corDeTexto
                 )
             }
             Row {
                 Text(
                     text = contato.numero,
-                    modifier = Modifier.padding(start = 15.dp)
+                    modifier = Modifier.padding(start = 15.dp),
+                    color = preferencesUiState.corDeTexto
                 )
             }
             Row {
@@ -332,7 +335,7 @@ private fun ContactCard(
                         .width(95.dp)
                         .padding(10.dp),
                     shape = ButtonDefaults.filledTonalShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
+                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao)
                 ) {
                     Icon(
                         Icons.Default.Create,
@@ -368,20 +371,18 @@ fun RecentContactCard(
     contato: Contato,
     contatoViewModel: ContatoViewModel,
     grupoViewModel: GrupoViewModel,
-    grupoContatoViewModel: GrupoContatoViewModel
+    grupoContatoViewModel: GrupoContatoViewModel,
+    preferencesUiState: PreferencesUiState
 ) {
     // Lógica de I/O removida, agora a responsabilidade é do ViewModel
 
     Column(modifier = Modifier.padding()) {
-        Surface(
+        Card(
+            colors = CardDefaults.cardColors(containerColor = preferencesUiState.corDeCards,),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
                 .padding(top = 5.dp, bottom = 5.dp, start = 22.dp)
-                .border(
-                    shape = CircleShape,
-                    border = BorderStroke(5.dp, color = Color.LightGray)
-                )
                 .combinedClickable(
                     onClick = {
                         contatoViewModel.receberCttEdit(contato)
@@ -404,11 +405,10 @@ fun RecentContactCard(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(shape = CircleShape, color = Color.LightGray)
                     .padding(start = 5.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Row {
+                Row(){
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "Ícone de Perfil",
@@ -420,8 +420,8 @@ fun RecentContactCard(
                     Text(
                         text = contato.nome,
                         modifier = Modifier.padding(bottom = 15.dp, top = 10.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                        style = MaterialTheme.typography.titleMedium,
+                        color = preferencesUiState.corDeTexto                    )
                 }
             }
         }

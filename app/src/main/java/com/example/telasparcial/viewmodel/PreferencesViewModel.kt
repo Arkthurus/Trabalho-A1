@@ -1,23 +1,27 @@
 package com.example.telasparcial.viewmodel
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.telasparcial.data.repository.ContatosRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-enum class TamanhoDeFonte(val tamanho: Float) {
-    Pequeno(tamanho = 18f),
-    Medio(tamanho = 20f),
-    Grande(tamanho = 22f);
+enum class TamanhoDeFonte(val tamanho: TextUnit) {
+    Pequeno(tamanho = 18.sp),
+    Medio(tamanho = 20.sp),
+    Grande(tamanho = 22.sp);
 }
 
 data class PreferencesUiState(
     val corDeTexto: Color = Color(255, 255, 255),
     val corDeBotao: Color = Color(98, 170, 163),
-    val corDeFundo: Color = Color.Black,
-    val corDeCards: Color = Color.LightGray,
+    val corDeFundo: Color = Color(30,30,30),
+    val corDeCards: Color = Color.Gray,
     val tamanhoDeFonte: TamanhoDeFonte = TamanhoDeFonte.Medio,
 )
 class PreferencesViewModel : ViewModel() {
