@@ -1,8 +1,10 @@
 package com.example.telasparcial.ui.telas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -68,10 +71,86 @@ fun TelaAdm(
                 ativado = temaEscuroAtivado,
                 onCheckedChange = { temaEscuroAtivado = it }
             )
+            // 1. Estado para armazenar a cor atual do botão.
+            var corDoBotao by remember { mutableStateOf(Color(0xFF6200EE)) }
+            // 2. Estado para controlar a visibilidade do seletor de cores (AlertDialog).
+            var mostrarSeletorDeCor by remember { mutableStateOf(false) }
+            Button(
+                onClick = {mostrarSeletorDeCor = true},
+                colors = ButtonDefaults.buttonColors(containerColor = corDoBotao),
+                modifier = Modifier.padding(start = 10.dp, top = 40.dp).fillMaxWidth().height(70.dp)
+            ) {Text("Cor dos Botões")}
+            // 3. Se `mostrarSeletorDeCor` for verdadeiro, o AlertDialog é exibido.
+            if (mostrarSeletorDeCor) {
+                SeletorDeCorRGBDialog(
+                    corInicial = corDoBotao,
+                    onCorSelecionada = { novaCor ->
+                        corDoBotao = novaCor // Atualiza a cor do botão.
+                        mostrarSeletorDeCor = false // Fecha o seletor.
+                    },
+                    onDismiss = {
+                        mostrarSeletorDeCor = false // Fecha o seletor se o usuário clicar fora.
+                    }
+                )
+            }
         }
     }
 }
+@Composable
+fun SeletorDeCorRGBDialog(
+    corInicial: Color,
+    onCorSelecionada: (Color) -> Unit,
+    onDismiss: () -> Unit
+) {
+    // Estados para cada canal de cor (0.0f a 1.0f).
+    var r by remember { mutableStateOf(corInicial.red) }
+    var g by remember { mutableStateOf(corInicial.green) }
+    var b by remember { mutableStateOf(corInicial.blue) }
 
+    val novaCor = Color(r, g, b)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Selecione uma Cor") },
+        text = {
+            Column {
+                // Pré-visualização da cor.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(8.dp)) // Arredonda as bordas
+                        .background(novaCor) // Aplica a cor de fundo
+                )
+
+                // Slider para Vermelho (Red)
+                Text(text = "Vermelho: ${(r * 255).toInt()}")
+                Slider(value = r, onValueChange = { r = it })
+
+                // Slider para Verde (Green)
+                Text(text = "Verde: ${(g * 255).toInt()}")
+                Slider(value = g, onValueChange = { g = it })
+
+                // Slider para Azul (Blue)
+                Text(text = "Azul: ${(b * 255).toInt()}")
+                Slider(value = b, onValueChange = { b = it })
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onCorSelecionada(novaCor) }
+            ) {
+                Text("Confirmar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
 
 @Composable
 fun ConfiguracaoItem(
