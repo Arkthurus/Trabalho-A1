@@ -55,8 +55,8 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
         bottomBar = { BottomBar(navController) }
-    ) {
-        Column {
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
                 Tab(
                     selected = selectedTabIndex == 0,
