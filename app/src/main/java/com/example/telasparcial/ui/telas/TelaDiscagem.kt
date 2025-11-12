@@ -43,7 +43,7 @@ fun TelaDiscagem(
     preferencesUiState: PreferencesUiState
 ) {
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState) }
     ) { innerPadding -> // ✅ Recebe o padding do Scaffold
         Column(
             // ✅ CORREÇÃO: Aplica o padding interno, especialmente o inferior
@@ -56,7 +56,7 @@ fun TelaDiscagem(
 
 // 🎯 MELHORIA: Usando componentes padrão do Material3 para a NavigationBar
 @Composable
-fun BottomBar(navController : NavController) {
+fun BottomBar(navController: NavController, preferencesUiState: PreferencesUiState) {
     val currentRoute = remember { mutableStateOf("TelaDiscar") } // Estado básico para controle visual
 
     // Definição simples dos itens de navegação
@@ -66,12 +66,13 @@ fun BottomBar(navController : NavController) {
         Pair(Icons.Default.AccountCircle, "Perfil") to "TabScreen"
     )
 
-    NavigationBar {
+    NavigationBar(containerColor = preferencesUiState.corDeFundo,
+                  contentColor = preferencesUiState.corDeBotao){
         items.forEach { (iconPair, route) ->
             val (icon, label) = iconPair
             NavigationBarItem(
                 icon = { Icon(icon, contentDescription = label) },
-                label = { Text(label) },
+                label = { Text(label, color = preferencesUiState.corDeTexto) },
                 selected = currentRoute.value == route, // Verifica se a rota está selecionada
                 onClick = {
                     currentRoute.value = route

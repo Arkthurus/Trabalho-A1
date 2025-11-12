@@ -65,7 +65,7 @@ fun TelaLista(
 
 
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState) }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -332,7 +332,7 @@ private fun ContactCard(
                         .width(95.dp)
                         .padding(10.dp),
                     shape = ButtonDefaults.filledTonalShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!)
+                    colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao)
                 ) {
                     Icon(
                         Icons.Default.Create,

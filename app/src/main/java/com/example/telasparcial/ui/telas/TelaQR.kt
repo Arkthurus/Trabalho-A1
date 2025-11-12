@@ -3,6 +3,7 @@ package com.example.telasparcial.ui.telas
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -59,9 +61,11 @@ fun TabScreen(
     val tabNavController = rememberNavController()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController, preferencesUiState) },
+        containerColor = preferencesUiState.corDeFundo,
+        modifier = Modifier.background(preferencesUiState.corDeFundo)
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = preferencesUiState.corDeFundo)){
             Spacer(modifier = Modifier.height(40.dp))
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
                 Tab(
@@ -70,7 +74,10 @@ fun TabScreen(
                         selectedTabIndex = 0
                         tabNavController.navigate("meucodigo")
                     },
-                    text = { Text("Meu código") }
+                    selectedContentColor = preferencesUiState.corDeBotao,
+
+                    modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+                    text = { Text("Meu código", color = preferencesUiState.corDeTexto) }
                 )
 
                 Tab(
@@ -79,7 +86,8 @@ fun TabScreen(
                         selectedTabIndex = 1
                         tabNavController.navigate("escanearcodigo")
                     },
-                    text = { Text("Escanear Código") }
+                    modifier = Modifier.background(color = preferencesUiState.corDeFundo),
+                    text = { Text("Escanear Código", color = preferencesUiState.corDeTexto) }
                 )
             }
 
@@ -107,10 +115,12 @@ fun TelaQR(
     Surface(
         modifier = Modifier
             .fillMaxHeight()
+            .background(color = preferencesUiState.corDeFundo)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally){
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.background(color = preferencesUiState.corDeFundo)){
             Spacer(Modifier.height(10.dp))
-            ProfileStats(navController, authViewModel)
+            ProfileStats(navController, authViewModel, preferencesUiState)
             Spacer(Modifier.height(10.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -126,7 +136,7 @@ fun TelaQR(
 
             Text(
                 text = advice,
-
+                color = preferencesUiState.corDeTexto,
                 style = androidx.compose.material.MaterialTheme.typography.h3.copy(
                     lineHeight = 35.sp
                 ),
@@ -146,15 +156,17 @@ fun TelaQR(
                         .fillMaxWidth(.85f)
                         .height(50.dp)
                         .align(Alignment.TopCenter)
-                        .padding(top = 5.dp)
+                        .padding(top = 5.dp),
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao)
                 ) {
                     Text("Novo Conselho",
-                        color = Color.White)
+                        color = preferencesUiState.corDeTexto)
                 }
 
                 Button(onClick = {
                     navController.navigate("TelaEditUSER")
                 },
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
@@ -163,12 +175,13 @@ fun TelaQR(
                 ){
                     Text("Editar User",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
-                        color = Color.White)
+                        color = preferencesUiState.corDeTexto)
                 }
                 Button(
                     onClick = {
                         authViewModel.desLogar()
                     },
+                    colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(50.dp)
@@ -177,7 +190,7 @@ fun TelaQR(
                 ) {
                     Text("Deslogar",
                         fontSize = TextUnit(value = 4.5f, TextUnitType.Em),
-                        color = Color.White
+                        color = preferencesUiState.corDeTexto
                     )
                 }
             }
@@ -199,7 +212,7 @@ fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
                 .padding(vertical = 25.dp)
         ) {
             Icon(Icons.Default.Share, "Icone share")
-            Text("Aponte sua câmera para o código QR de alguém!")
+            Text("Aponte sua câmera para o código QR de alguém!", color = preferencesUiState.corDeTexto)
         }
 
         Image(
@@ -217,6 +230,7 @@ fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
                     Toast.LENGTH_SHORT
                 ).show()
             },
+            colors = ButtonDefaults.buttonColors(preferencesUiState.corDeBotao),
             modifier = Modifier
                 .fillMaxWidth(.85f)
                 .padding(top = 100.dp)
@@ -226,7 +240,7 @@ fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
             Text(
                 "Escanear Código",
                 style = MaterialTheme.typography.headlineSmall,
-                color = Color.White // Cor branca adicionada
+                color = preferencesUiState.corDeTexto
             )
         }
     }
@@ -234,7 +248,11 @@ fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
 
 
 @Composable
-fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
+fun ProfileStats(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
 
     // 1. Coletar o estado do usuário e de loading do ViewModel
     val userState by authViewModel.userState.collectAsStateWithLifecycle()
@@ -296,7 +314,8 @@ fun ProfileStats(navController: NavController, authViewModel: AuthViewModel) {
 
         Text(
             text = "$emailShow",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = preferencesUiState.corDeTexto
         )
     }
 }
