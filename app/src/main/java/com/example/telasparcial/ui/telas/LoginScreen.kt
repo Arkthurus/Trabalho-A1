@@ -22,13 +22,6 @@ fun LoginScreen(
 
     val isLoading by authViewModel.loading.collectAsStateWithLifecycle()
 
-    val userState by authViewModel.userState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(userState) {
-        if (userState != null) {
-        }
-    }
-
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
