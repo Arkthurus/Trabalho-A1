@@ -102,7 +102,6 @@ fun AppNav(authViewModel: AuthViewModel) {
                     grupoViewModel = grupoViewModel,
                     grupoContatoViewModel = grupoContatoViewModel,
                     authViewModel = authViewModel,
-                    preferencesViewModel = preferencesViewModel,
                     preferencesUiState = preferencesUiState
                 )
             }else{
@@ -122,7 +121,6 @@ fun AppNav(authViewModel: AuthViewModel) {
                 grupoViewModel = grupoViewModel,
                 grupoContatoViewModel = grupoContatoViewModel,
                 authViewModel = authViewModel,
-                preferencesViewModel = preferencesViewModel,
                 preferencesUiState = preferencesUiState
             )
         }
