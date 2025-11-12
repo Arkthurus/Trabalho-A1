@@ -34,6 +34,7 @@ import com.example.telasparcial.ui.telas.SignUpScreen
 import com.example.telasparcial.ui.telas.LoginScreen
 import com.example.telasparcial.ui.telas.TelaEscanearCodigo
 import com.example.telasparcial.ui.telas.TelaAdm // Importação da nova tela Admin
+import com.example.telasparcial.viewmodel.PreferencesViewModel
 
 @Composable
 fun AppNav(authViewModel: AuthViewModel) {
@@ -51,6 +52,8 @@ fun AppNav(authViewModel: AuthViewModel) {
             authViewModel.clearFeedBack()
         }
     }
+
+    val preferencesViewModel : PreferencesViewModel = viewModel()
 
     val contatoViewModel: ContatoViewModel = viewModel(
         factory = ContatosViewModelFactory(
@@ -95,7 +98,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                     contatoViewModel = contatoViewModel,
                     grupoViewModel = grupoViewModel,
                     grupoContatoViewModel = grupoContatoViewModel,
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    preferencesViewModel = preferencesViewModel
                 )
             }else{
 
@@ -113,7 +117,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                 contatoViewModel = contatoViewModel,
                 grupoViewModel = grupoViewModel,
                 grupoContatoViewModel = grupoContatoViewModel,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                preferencesViewModel = preferencesViewModel
             )
         }
         composable(route = "TelaEdit") {
@@ -142,7 +147,8 @@ fun AppNav(authViewModel: AuthViewModel) {
         }
         composable(
             route = "TelaAddCtt/{numeroCtt}",
-            arguments = listOf(navArgument("numeroCtt") { type = NavType.StringType })
+            arguments = listOf(navArgument("numeroCtt") { type = NavType.StringType }),
+
         ) { backStackEntry ->
             val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
 
@@ -157,7 +163,8 @@ fun AppNav(authViewModel: AuthViewModel) {
 
         composable("TelaAdm") {
             TelaAdm(
-                navController = navController
+                navController = navController,
+                preferencesViewModel = preferencesViewModel
             )
         }
     }
