@@ -151,7 +151,7 @@ fun AppNav(authViewModel: AuthViewModel) {
             )
         }
         composable("TabScreen") {
-            TabScreen(navController, authViewModel)
+            TabScreen(navController, authViewModel, preferencesUiState)
         }
         composable(
             route = "TelaAddCtt/{numeroCtt}",
@@ -167,8 +167,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                 navController,
             )
         }
-        composable("meuCodigo") { TelaQR(navController, authViewModel) }
-        composable("escanearCodigo") { TelaEscanearCodigo() }
+        composable("meuCodigo") { TelaQR(navController, authViewModel, preferencesUiState) }
+        composable("escanearCodigo") { TelaEscanearCodigo(preferencesUiState) }
 
         composable("TelaAdm") {
             TelaAdm(

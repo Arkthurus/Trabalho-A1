@@ -46,17 +46,23 @@ import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.R
 import com.example.telasparcial.viewmodel.AdviceViewModel
 import com.example.telasparcial.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun TabScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
     val tabNavController = rememberNavController()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) {
         Column {
+            Spacer(modifier = Modifier.height(40.dp))
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
                 Tab(
                     selected = selectedTabIndex == 0,
@@ -80,9 +86,9 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
             NavHost(navController = tabNavController, startDestination = "meucodigo") {
                 composable("meucodigo") {
 
-                    TelaQR(navController, authViewModel)
+                    TelaQR(navController, authViewModel, preferencesUiState)
                 }
-                composable("escanearcodigo") { TelaEscanearCodigo() }
+                composable("escanearcodigo") { TelaEscanearCodigo(preferencesUiState) }
             }
         }
     }
@@ -90,7 +96,11 @@ fun TabScreen(navController: NavController, authViewModel: AuthViewModel) {
 
 
 @Composable
-fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
+fun TelaQR(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
+) {
 
     val context = LocalContext.current
 
@@ -177,7 +187,7 @@ fun TelaQR(navController: NavController, authViewModel: AuthViewModel) {
 
 
 @Composable
-fun TelaEscanearCodigo() {
+fun TelaEscanearCodigo(preferencesUiState: PreferencesUiState) {
     val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
