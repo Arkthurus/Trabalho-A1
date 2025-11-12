@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.telasparcial.data.repository.ContatosRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +41,25 @@ class PreferencesViewModel : ViewModel() {
             currentState.copy(corDeBotao = novaCor)
         }
     }
+
+    fun atualizarCorDoTexto(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeTexto = novaCor)
+        }
+    }
+
+    fun atualizarCorDoFundo(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeFundo = novaCor)
+        }
+    }
+
+    fun atualizarCorDosCards(novaCor: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(corDeCards = novaCor)
+        }
+    }
+
 }
 
 

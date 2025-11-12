@@ -64,9 +64,8 @@ fun TabScreen(
         bottomBar = { BottomBar(navController, preferencesUiState) },
         containerColor = preferencesUiState.corDeFundo,
         modifier = Modifier.background(preferencesUiState.corDeFundo)
-    ) {
-        Column(modifier = Modifier.background(color = preferencesUiState.corDeFundo)){
-            Spacer(modifier = Modifier.height(40.dp))
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
                 Tab(
                     selected = selectedTabIndex == 0,
