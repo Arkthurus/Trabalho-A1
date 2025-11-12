@@ -100,7 +100,7 @@ fun TelaAdm(
                 .height(70.dp)
                 .border(
                     1.dp,
-                    Color.White,
+                    preferencesUiState.corDeBotao,
                     RoundedCornerShape(36.dp)
                 )
 
