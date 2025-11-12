@@ -16,10 +16,10 @@ enum class TamanhoDeFonte(val tamanho: Float) {
 }
 
 data class PreferencesUiState(
-    val corDeTexto: Color? = Color(255, 255, 255),
-    val corDeBotao: Color? = Color(98, 170, 163),
-    val corDeFundo: Color? = Color.Black,
-    val corDeCards: Color? = Color.LightGray,
+    val corDeTexto: Color = Color(255, 255, 255),
+    val corDeBotao: Color = Color(98, 170, 163),
+    val corDeFundo: Color = Color(30,30,30),
+    val corDeCards: Color = Color.LightGray,
     val tamanhoDeFonte: TamanhoDeFonte = TamanhoDeFonte.Medio,
 )
 class PreferencesViewModel : ViewModel() {
