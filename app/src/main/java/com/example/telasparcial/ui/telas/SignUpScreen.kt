@@ -11,11 +11,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.telasparcial.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 @Composable
 fun SignUpScreen(
     authViewModel: AuthViewModel,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    preferencesUiState: PreferencesUiState
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

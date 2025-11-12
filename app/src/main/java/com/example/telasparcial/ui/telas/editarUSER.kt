@@ -14,11 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.viewmodel.AuthViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 @Composable
 fun EditUSER(
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    preferencesUiState: PreferencesUiState
 ) {
     // 1. Coletar o estado do usuário e de loading do ViewModel
     val userState by authViewModel.userState.collectAsStateWithLifecycle()

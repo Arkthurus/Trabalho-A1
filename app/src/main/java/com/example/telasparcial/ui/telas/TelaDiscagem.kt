@@ -1,6 +1,5 @@
 package com.example.telasparcial.ui.telas
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,11 +32,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 // Removida a anotação @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 // pois usaremos o parâmetro padding
 @Composable
-fun TelaDiscagem(navController: NavController, onNavigateToAddCtt: (String) -> Unit) {
+fun TelaDiscagem(
+    navController: NavController,
+    onNavigateToAddCtt: (String) -> Unit,
+    preferencesUiState: PreferencesUiState
+) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding -> // ✅ Recebe o padding do Scaffold

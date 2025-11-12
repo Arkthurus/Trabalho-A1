@@ -47,6 +47,7 @@ import com.example.telasparcial.viewmodel.AuthViewModel
 import com.example.telasparcial.viewmodel.ContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoContatoViewModel
 import com.example.telasparcial.viewmodel.GrupoViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 import com.example.telasparcial.viewmodel.PreferencesViewModel
 
 
@@ -57,10 +58,11 @@ fun TelaLista(
     grupoViewModel: GrupoViewModel,
     grupoContatoViewModel: GrupoContatoViewModel,
     authViewModel: AuthViewModel,
-    preferencesViewModel: PreferencesViewModel
+    preferencesViewModel: PreferencesViewModel,
+    preferencesUiState: PreferencesUiState
 ) {
     val isAdmin by authViewModel.isAdmin.collectAsStateWithLifecycle()
-    val preferencesUiState by preferencesViewModel.uiState.collectAsStateWithLifecycle()
+
 
     Scaffold(
         bottomBar = { BottomBar(navController) }

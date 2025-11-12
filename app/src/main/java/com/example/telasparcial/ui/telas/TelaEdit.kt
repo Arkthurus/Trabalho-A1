@@ -26,11 +26,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.viewmodel.ContatoViewModel
+import com.example.telasparcial.viewmodel.PreferencesUiState
 
 @Composable
 fun TelaEdit(
     navController: NavController,
     contatoViewModel: ContatoViewModel,
+    preferencesUiState: PreferencesUiState,
 ) {
 
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()

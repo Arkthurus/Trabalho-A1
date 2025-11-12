@@ -54,6 +54,7 @@ fun AppNav(authViewModel: AuthViewModel) {
     }
 
     val preferencesViewModel : PreferencesViewModel = viewModel()
+    val preferencesUiState by preferencesViewModel.uiState.collectAsStateWithLifecycle()
 
     val contatoViewModel: ContatoViewModel = viewModel(
         factory = ContatosViewModelFactory(
@@ -81,12 +82,14 @@ fun AppNav(authViewModel: AuthViewModel) {
         composable("TelaCadastro"){
             SignUpScreen(
                 authViewModel = authViewModel,
+                preferencesUiState = preferencesUiState,
                 onNavigateToLogin = {navController.navigate("TelaLogin")}
             )
         }
         composable("TelaLogin"){
             LoginScreen(
                 authViewModel = authViewModel,
+                preferencesUiState = preferencesUiState,
                 onNavigateToSignUp = { navController.navigate("TelaCadastro") }
             )
         }
@@ -99,7 +102,8 @@ fun AppNav(authViewModel: AuthViewModel) {
                     grupoViewModel = grupoViewModel,
                     grupoContatoViewModel = grupoContatoViewModel,
                     authViewModel = authViewModel,
-                    preferencesViewModel = preferencesViewModel
+                    preferencesViewModel = preferencesViewModel,
+                    preferencesUiState = preferencesUiState
                 )
             }else{
 
@@ -118,24 +122,28 @@ fun AppNav(authViewModel: AuthViewModel) {
                 grupoViewModel = grupoViewModel,
                 grupoContatoViewModel = grupoContatoViewModel,
                 authViewModel = authViewModel,
-                preferencesViewModel = preferencesViewModel
+                preferencesViewModel = preferencesViewModel,
+                preferencesUiState = preferencesUiState
             )
         }
         composable(route = "TelaEdit") {
             TelaEdit(
                 navController = navController,
-                contatoViewModel = contatoViewModel
+                contatoViewModel = contatoViewModel,
+                preferencesUiState = preferencesUiState
             )
         }
         composable(route = "TelaEditUSER") {
             EditUSER(
                 navController = navController,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                preferencesUiState = preferencesUiState
             )
         }
         composable("TelaDiscar") {
             TelaDiscagem(
                 navController = navController,
+                preferencesUiState = preferencesUiState,
                 onNavigateToAddCtt = { numeroCtt: String ->
 
                     navController.navigate("TelaAddCtt/$numeroCtt")
@@ -154,8 +162,9 @@ fun AppNav(authViewModel: AuthViewModel) {
 
             AddCtt(
                 numeroCtt = numeroCtt,
+                preferencesUiState,
                 contatoViewModel,
-                navController
+                navController,
             )
         }
         composable("meuCodigo") { TelaQR(navController, authViewModel) }
