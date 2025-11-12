@@ -33,10 +33,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.viewmodel.PreferencesViewModel
+
+enum class DialogoAtivo {
+    COR_BOTOES,
+    COR_TEXTO,
+    COR_CARTOES,
+    COR_FUNDO,
+    NENHUM
+}
 
 data class UserAdm(
     val uid: String,
@@ -53,8 +62,7 @@ fun TelaAdm(
     // 2. Observe o estado do ViewModel. O app irá recompor quando ele mudar.
     val preferencesUiState by preferencesViewModel.uiState.collectAsStateWithLifecycle()
 
-    // Estado local apenas para controlar a visibilidade do seletor de cores
-    var mostrarSeletorDeCor by remember { mutableStateOf(false) }
+    var dialogoAtivo by remember { mutableStateOf(DialogoAtivo.NENHUM) }
 
     Scaffold(
         topBar = {
@@ -78,35 +86,105 @@ fun TelaAdm(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
+            // Diálogo de cor dos botões
             Button(
-                onClick = { mostrarSeletorDeCor = true },
-                // 4. Use a cor do botão vinda diretamente do ViewModel
+                onClick = {
+                    dialogoAtivo = DialogoAtivo.COR_BOTOES
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp)
             ) {
-                // 5. Use a cor do texto vinda diretamente do ViewModel
                 Text("Cor dos Botões", color = preferencesUiState.corDeTexto)
             }
 
-            // O AlertDialog só é exibido quando 'mostrarSeletorDeCor' é true
-            if (mostrarSeletorDeCor) {
-                SeletorDeCorRGBDialog(
-                    corInicial = preferencesUiState.corDeBotao,
-                    onCorSelecionada = { novaCor ->
-                        // 6. Notifique o ViewModel que a cor mudou
-                        preferencesViewModel.atualizarCorDoBotao(novaCor)
-                        mostrarSeletorDeCor = false // Fecha o seletor
-                    },
-                    onDismiss = {
-                        mostrarSeletorDeCor = false // Fecha se o usuário clicar fora
-                    }
-                )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Diálogo de cor do texto
+            Button(
+                onClick = {
+                    dialogoAtivo = DialogoAtivo.COR_TEXTO
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            ) {
+                Text("Cor do Texto", color = preferencesUiState.corDeTexto)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Diálogo de cor dos cartões
+            Button(
+                onClick = {
+                    dialogoAtivo = DialogoAtivo.COR_CARTOES
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeCards),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            ) {
+                Text("Cor dos Cartões", color = preferencesUiState.corDeTexto)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Diálogo de cor do fundo
+            Button(
+                onClick = {
+                    dialogoAtivo = DialogoAtivo.COR_FUNDO
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeFundo),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            ) {
+                Text("Cor do Fundo", color = preferencesUiState.corDeTexto)
             }
         }
+    }
+
+    val corInicial: Color
+    val funcaoAlterarCor: (Color) -> Unit
+
+    when (dialogoAtivo) {
+        DialogoAtivo.COR_BOTOES -> {
+            corInicial = preferencesUiState.corDeBotao
+            funcaoAlterarCor = preferencesViewModel::atualizarCorDoBotao
+        }
+
+        DialogoAtivo.COR_TEXTO -> {
+            corInicial = preferencesUiState.corDeTexto
+            funcaoAlterarCor = preferencesViewModel::atualizarCorDoTexto
+        }
+
+        DialogoAtivo.COR_CARTOES -> {
+            corInicial = preferencesUiState.corDeCards
+            funcaoAlterarCor = preferencesViewModel::atualizarCorDosCards
+        }
+
+        DialogoAtivo.COR_FUNDO -> {
+            corInicial = preferencesUiState.corDeFundo
+            funcaoAlterarCor = preferencesViewModel::atualizarCorDoFundo
+        }
+
+        DialogoAtivo.NENHUM -> {
+            corInicial = Color.Transparent
+            funcaoAlterarCor = {}
+        }
+    }
+
+    if (dialogoAtivo != DialogoAtivo.NENHUM) {
+        SeletorDeCorRGBDialog(
+            corInicial = corInicial,
+            onCorSelecionada = { novaCor ->
+                funcaoAlterarCor(novaCor)
+                dialogoAtivo = DialogoAtivo.NENHUM
+            },
+            onDismiss = { dialogoAtivo = DialogoAtivo.NENHUM }
+        )
     }
 }
 
@@ -119,7 +197,6 @@ fun SeletorDeCorRGBDialog(
     var r by remember { mutableFloatStateOf(corInicial.red) }
     var g by remember { mutableFloatStateOf(corInicial.green) }
     var b by remember { mutableFloatStateOf(corInicial.blue) }
-
     val novaCor = Color(r, g, b)
 
     AlertDialog(
