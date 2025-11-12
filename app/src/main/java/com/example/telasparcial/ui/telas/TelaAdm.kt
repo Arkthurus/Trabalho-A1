@@ -70,19 +70,19 @@ fun TelaAdm(
             Button(
                 onClick = { mostrarSeletorDeCor = true },
                 // 4. Use a cor do botão vinda diretamente do ViewModel
-                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao!!),
+                colors = ButtonDefaults.buttonColors(containerColor = preferencesUiState.corDeBotao),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp)
             ) {
                 // 5. Use a cor do texto vinda diretamente do ViewModel
-                Text("Cor dos Botões", color = preferencesUiState.corDeTexto!!)
+                Text("Cor dos Botões", color = preferencesUiState.corDeTexto)
             }
 
             // O AlertDialog só é exibido quando 'mostrarSeletorDeCor' é true
             if (mostrarSeletorDeCor) {
                 SeletorDeCorRGBDialog(
-                    corInicial = preferencesUiState.corDeBotao!!,
+                    corInicial = preferencesUiState.corDeBotao,
                     onCorSelecionada = { novaCor ->
                         // 6. Notifique o ViewModel que a cor mudou
                         preferencesViewModel.atualizarCorDoBotao(novaCor)
