@@ -26,6 +26,8 @@ Para utilizar o app, o usuário deve se cadastrar com o nome de usuário, email 
 ![TelaListaAdmON.png](imagens%20das%20telas/TelaListaAdmON.png)
 ### Tela ADM
 ![TelaADM.png](imagens%20das%20telas/TelaADM.png)
+### Tela ADM com o Slider de cores
+![TelaAdmComSlider.png](imagens%20das%20telas/TelaAdmComSlider.png)
 ### Tela Discagem
 ![TelaDiscagem.png](imagens%20das%20telas/TelaDiscagem.png)
 ### Tela de Adicionar Contato
