@@ -46,6 +46,4 @@ Para utilizar o app, o usuário deve se cadastrar com o nome de usuário, email 
 
 ## Video do App Funcionando 2025
 
-[![VideoDemoDoApp.mp4](imagens%20das%20telas/TelaEditarUSER%28ReAuntenticar%29.png)]
-
 https://github.com/Arkthurus/Trabalho-A1/raw/refs/heads/ArthuroChanges/imagens%20das%20telas/VideoDemoDoApp.mp4
