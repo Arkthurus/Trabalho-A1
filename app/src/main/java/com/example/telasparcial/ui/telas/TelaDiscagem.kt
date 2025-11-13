@@ -71,7 +71,7 @@ fun BottomBar(navController: NavController, preferencesUiState: PreferencesUiSta
         Pair(Icons.Default.AccountCircle, "Perfil") to "TabScreen"
     )
 
-    NavigationBar(containerColor = Color.DarkGray,
+    NavigationBar(containerColor = preferencesUiState.corDeCards.copy(alpha = .4f),
                   contentColor = preferencesUiState.corDeBotao){
         items.forEach { (iconPair, route) ->
             val (icon, label) = iconPair
