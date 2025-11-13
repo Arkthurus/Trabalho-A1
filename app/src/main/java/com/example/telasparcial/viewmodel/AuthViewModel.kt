@@ -61,7 +61,6 @@ class AuthViewModel : ViewModel(){
 
                 auth.currentUser?.updateProfile(profileUpdate)?.await()
 
-                _userState.value = auth.currentUser
                 _authFeedback.value = "Cadastro realizado com sucesso! :) "
 
             }catch (e: Exception){
